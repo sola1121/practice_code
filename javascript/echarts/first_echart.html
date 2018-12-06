@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>echart</title>
+</head>
+<body>
+    <!-- 为echarts准备的 -->
+    <div id="main" style="height: 400px;"></div>
+</body>
+<script src="../../package_dev/echarts-2.2.7/build/dist/echarts.js"></script>
+<script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {echarts: "../../package_dev/echarts-2.2.7/build/dist/"}
+    })
+
+    // 使用
+    require(
+        [
+            "echarts",
+            "echarts/char/bar",   // 使用柱状图, 在dist的char中有有相应的js文件 
+        ],
+
+        function(ec){
+            // 准备好的dom, 初始化echart图表
+            var myChar = ec.init(document.getElementById("main"))
+
+            var option = {
+                tooltip:{show: true},
+                length: {data: ["销量"]},
+                xAxis: [{
+                    type: "category",
+                    data : ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"],
+                }],
+                yAxis: [{
+                    type: "value",
+                }],
+                series: [{
+                    name: "销量",
+                    type: "bar",
+                    data: [5, 20, 40, 10, 10, 20],
+                }]
+            },
+
+            // 为echart对象加载数据
+            myChar.setOption(option)   
+        }
+    )
+</script>
+</html>
