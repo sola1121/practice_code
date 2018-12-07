@@ -1,0 +1,213 @@
+# 广告的效果
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #FFF;
+        }
+
+        #annoyingAdvert{
+            position: absolute;
+            z-index: 2;
+            display: none;
+            width: 100px;
+            background-color: #FFC;
+            padding: 10px;
+            margin: 10px;
+            border: 5px solid yellow;
+        }
+
+        #closeBox{
+            position: absolute;
+            color: red;
+            font-size: 1.5em;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="annoyingAdvert">
+        This is an incredibly annoying ad of the type you might find on some web site.
+        <div id="closeBox">&otimes;</div>
+    </div>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo ex quisquam assumenda sit eaque earum sint incidunt officia possimus cupiditate reiciendis fugit aperiam aut soluta officiis, nemo voluptas quos at.</p>
+    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Itaque similique dolores alias distinctio. Eius voluptas explicabo debitis in expedita quae dolores nulla veritatis quisquam quam? Provident eveniet perferendis recusandae ab?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem animi ipsam repellat labore voluptatum non dolores ipsa? Beatae delectus asperiores, placeat laborum explicabo non sapiente excepturi suscipit vel perspiciatis maiores.</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos ullam in perspiciatis incidunt unde, eum ex corporis distinctio minus nemo temporibus, culpa hic quas excepturi asperiores deleniti rerum qui consequuntur.</p>
+</body>
+<script>
+    window.addEventListener("load", initAdvert, false)
+
+    function initAdvert() {
+        var adBox = "annoyingAdvert"
+
+        document.getElementById("adBox").style.display = "block"
+        document.getElementById("closeBox").addEventListener(
+            "click",
+            function() {
+                document.getElementById("adBox").style.display = "none"
+            },
+            false
+        )
+    }
+</script>
+</html>
+
+
+<script>
+window.addEventListener("load", initDate, false)
+
+function initDate() {
+    var dayName = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    var monName = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+
+    var now = new Date()
+    var dtString = dayName[now.getDay()] + ", " + monName[now.getMonth()] + " " + now.getDate()
+
+    document.getElementById("dtField").innerHTML = dtString
+}
+</script>
+
+
+# 显示任何时区中的时间
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <h3>Our Office hours are 9:00 am to 5:00 pm, Monday through Friday, at each of our locations. It is now</h3>
+    <ul>
+        <li><span class="tz-8"></span> <span> in San Francisco</span></li>
+        <li><span class="tz-5"></span> <span> in New York</span></li>
+        <li><span class="tz-0"></span> <span> in London</span></li>
+        <li><span class="tz+7"></span> <span> in HongKong</span></li>
+    </ul>
+</body>
+<script>
+window.addEventListener("load", initDate, false)
+
+function initDate() {
+    var spanTags = document.getElementsByTagName("span")
+
+    for (var i=0; i<spanTags.elngth; i++){
+        if (spanTags[i].className.indexOf("tz") == 0){   // 依次处理class中为tz的span中
+            showTheTime(spanTags[i], spanTags[i].className.substring(2))
+        }
+    }
+}
+
+function showTheTime(currElem, tzOffset){   // 对currElem的innerHTML进行赋值, 以显示其中的, offset是tz-8中后面的数字, 即时区偏移量
+    var dayName = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    var thatTZ = new Date()   // 获取本地时间
+    var dateStr = thatTZ.toUTCString()   // Mon, 29 Oct 2018 09:52:49 GMT
+
+    dateStr = dateStr.substr(0, dateStr.length-3)   // 去掉GMT字符串
+    thatTZ.setTime(Date.parse(dateStr))   // 设置本地时间
+    thatTZ.setHours(thatTZ.getHours() + parseInt(tzOffset))   // 将小时数偏移对应时区
+
+    currElem.innerHTML = showTheHours(thatTZ.getHours()) + showZeroFilled(thatTZ.getMinutes()) + showAmPm(thatTZ.getHours()) + dayName[thatTZ.getDay()]
+
+    function showTheHours(theHour){   // 12小时制
+        if (theHour == 0) {
+            return 12
+        }
+        if (theHour <13) {
+            return theHour
+        }
+        return theHour - 12
+    }
+
+    function showZeroFilled(inValue){   // 使用0填充位数
+        if (inValue > 9){
+            return ":" + inValue
+        }
+        return ":0" + inValue
+    }
+
+    function showAmPm(thatTime){   // 为后面添加AM或PM
+        if (thatTime <12){
+            return " AM "
+        }
+        return " PM "
+    }
+}
+</script>
+</html>
+
+
+# 倒数计数器
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <p>Dori says:</p>
+    <p>It's only 
+        <span class="daysTill" id="bday"></span> 
+       days until my birthday and
+        <span class="daysTill" id="xmas"></span>
+       days until Christmas, so you'd better start shopping now! 
+    </p>
+    <p>And it's <span class="daysTill" id="aniv"></span> days until our aniversary...</p>
+</body>
+<script>
+window.addEventListener("load", showDays, flase)
+
+function showDays() {
+    var spanTags = document.getElementsByName("span")   // 所有的span
+
+    for (var i=0; i<spanTags.length; i++){
+        if (spanTags[i].className.indexOf("dayTill") > -1) {   // 只要className中有dayTill的
+            spanTags[i].innerHTML = showTheDaysTill(spanTags[i].id)   // 通过id指示函数动作
+        }
+    }
+
+    function showTheDaysTill(thisDate){
+        var theDays
+
+        switch(thisDate){
+            case "anniv":
+                theDays = dayTill(5,6)   // 到5月6号
+                break
+            case "bday":
+                theDays = daysTill(8,7)   // 到8月7号
+                break
+            case "xmax":
+                theDays = daysTill(12,25)   // 到12月25号
+                break
+            default:
+        }
+        return theDays + " "
+    }
+
+    function daysTill(mm, dd) {
+        var now = new Date()   // 当前时间
+        var inDate = new Date(now.getFullYear(), mm-1, dd)   // 传入的设定时间
+
+        if (inDate.getTime() < now.getTime()) {
+            inDate.setYear(now.getFullYear() + 1)
+        }
+
+        return Math.ceil(dayToDays(inDate) - dayToDays(now))   // 通过向上取整, 获得相距天数
+
+        function daytoDays(inTime){
+            return inTime.getTime() / (1000*60*60*24)   // 由毫秒转换为天数
+        }
+
+    }
+}
+
+</script>
+</html>

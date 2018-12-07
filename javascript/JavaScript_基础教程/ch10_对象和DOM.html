@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="theForm">
+        <p><textarea name="" id="textArea" cols="30" rows="10"></textarea></p>
+        <input type="submit" value="add some text to the page">
+    </form>
+    <a href="#" id="deleteNode">Delete last paragraph</a>
+</body>
+<script>
+window.addEventListener("load", initAll, false)
+
+function initAll() {
+    document.getElementById("theForm").addEventListener("submit", addNode, false)
+    document.getElementById("deleteNode").addEventListener("click", delNode, false)
+}
+
+function addNode(evt) {
+    var inText = document.getElementById("textArea").value
+    var nextText = document.createTextNode(inText)
+
+    var newGraf = document.createElement("p")
+    newGraf.appendChild(nextText)
+
+    var docBody = document.getElementsByTagName("body")[0]
+    docBody.appendChild(newGraf)
+
+    evt.preventDefault()
+}
+
+function delNode(evt) {
+    var allGrafs = document.getElementsByTagName("p")
+
+    if (allGrafs.length > 1){
+        var lastGraf = allGrafs[allGrafs.length-1]
+        var docBody = document.getElementsByTagName("body")[0]
+    } else {
+        alert("Nothing to remove!")
+    }
+
+    evt.preventDefault()
+}
+
+</script>
+</html>
+
+# 删除特定的节点
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="theForm">
+        <p><textarea name="" id="textArea" cols="30" rows="10"></textarea></p>
+        <p>
+            <label for=""><input type="radio" name="nodeAction">Add Node</label>
+            <label for=""><input type="radio" name="nodeAction">Delete Node</label>
+        </p>
+        Paragraph #: <select id="grafCount"></select> 
+        <input type="submit" value="submit">
+    </form>
+    <div id="modifiable"></div>
+</body>
+<script>
+window.addEventListener("load", initAll, false)
+
+function initAll() {
+    document.getElementById("theForm").addEventListener("submit", nodeChanger, false)   // 监听submit
+    nodeChgArea = document.getElementById("modifiable")   // div标签
+}
+
+function addNode(){   // 添加一个节点
+    var inText = document.getElementById("textArea").value   // 获取节点textArea的值
+    var newText = document.createTextNode(inText)   // 依据值, 创建一个新的文本节点
+
+    var newGraf = document.createElement("p")   // 创建一个新的元素节点
+    newGraf.appendChild(newGraf)   // 向该新的元素节点中添加新建的云阿苏节点
+
+    nodeChgArea.appendChild(newGraf)   // 向预先的div标签中添加
+}
+
+function delNode() {   // 移除一个节点
+    var grafChoice = document.getElementById("grafCount").selectedIndex   // select标签选中的index
+    var allGrafs = nodeChgArea.getElementsByTagName("p")   // 获取所有的p标签
+    var oldGraf = allGrafs.item(grafChoice)   // 通过select选中的index, 对应获取要删除的标签
+
+    nodeChgArea.removeChild(oldGraf)   // 从div中移除所选的
+}
+
+function nodeChanger(evt) {   // 提交事件处理函数
+    var actionType = -1
+    var pGrafCt = nodeChgArea.getElementsByTagName("p").length   // 在div标签中的p标签的个数
+    var radioButtonSet = document.getElementById("theForm").nodeAction   // 
+
+    for (var i=0; i<radioButtonSet.length; i++){
+        if (radioButtonSet[i].checked){   // 通过radio选择的参数设置动作
+            actionType = i
+        }
+    }
+
+    switch(actionType) {   // 判断actionType
+        case 0:
+            addNode()
+            break;
+        case 1:
+            if(pGrafCt>0){
+                delNode()
+                break
+            }
+        default:
+            alert("No valid action was chosen")
+    }
+
+    document.getElementById("grafCount").options.length = 0   // 清空select标签
+
+    for (i=0; i<nodeChgArea.getElementsByTagName("p").length; i++){    // 重新将select标签的options个数设置为在div中的p标签的个数
+        document.getElementById("grafCount").options[i] = new Option(i+1)
+    }
+
+    evt.preventDefault()
+}
+
+</script>
+
+</html>
+
+
+# 插入节点
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form id="theForm">
+        <p><textarea id="textArea" cols="30" rows="10"></textarea></p>
+        <p>
+            <label><input type="radio" name="nodeAction">Add Node</label>
+            <label><input type="radio" name="nodeAction">Delete Node</label>
+            <label><input type="radio" name="nodeAction">Isert brfore node`</label>
+        </p>
+        Pragraph #: <select id="grafCount"></select>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="modifiable"></div>
+</body>
+<script>
+window.addEventListener("load", initAll, false)
+var nodeChgArea
+
+function initAll(){
+    document.getElementById("theForm").addEventListener("submit", nodeChanger, false)   // 为提交绑定nodeChanger事件
+    nodeChgArea = document.getElementById("modifiable")   // 全局变量nodeChgArea, 对应可变区域div
+}
+
+function addNode() {   // 添加一个节点
+    var inText = document.getElementById("textArea").value   // 根据textArea的值创建一个文本节点
+    var newText = document.createTextNode(inText)
+
+    var newGraf = document.createElement("p")   // 创建一个新的p元素节点, 并将刚创建的文字节点作为子节点加入其中
+    newGraf.appendChild(newText)
+
+    nodeChgArea.appendChild(newGraf)   // 向nodeChgArea中添加新建的p元素节点
+}
+
+function delNode(){   // 删除节点
+    var grafChoice = document.getElementById("grafCount").selectedIndex   // 从select中获取要删除的节点号
+    var allGrafs = nodeChgArea.getElementById("p")   // 获取nodeChgArea中的所有的p元素节点
+    var oldGraf = allGrafs.item(grafChoice)   // 从节点中找到对应节点号的元素
+
+    nodeChgArea.removeChild(oldGraf)   // 删除节点
+}
+
+function insertNode() {   // 插入节点
+    var grafChoice = document.getElementById("grafCount").selectedIndex   // 获取选中的节点
+    var inText = document.getElementById("textArea").value
+
+    var newText = document.createTextNode(inText)   // 根据textArea的值, 创建一个文本节点, 并在创建一个新的p元素节点, 添加文本节点
+    var newGraf = document.createElement("p")
+    newGraf.appendChild(newText)
+
+    var allGrafs = nodeChgArea.getElementsByTagName("p")   // 获取nodeChgArea中的所有p元素标签
+    var oldGraf = allGrafs.item(grafChoice)   // 更具选中的节点的参数, 获取对应的p元素节点
+
+    nodeChgArea.insertBefore(newGraf, oldGraf)   // 在旧的节点后面插入新的节点
+}
+
+function nodeChanger(evt) {   // 监听提交
+    var actionType = -1   // 处理动作标记
+    var pGrafCt = nodeChgArea.getElementsByTagName("p").length   // nodeChgArea中p元素标签的个数pGrafCt
+    var radioButtonSet = document.getElementById("theForm").nodeAction   // 获取表单内radio值
+
+    for(var i=0; i<radioButtonSet.length; i++) {
+        if (radioButtonSet[i].checked){   // 获取被选中的radio, 并将其的下标号赋给actionType
+            actionType = i
+        }
+    }
+
+    switch(actionType){   // 通过actionType来选取操作
+        case 0:
+            addNode()  // 添加一个节点
+            break
+        case 1:
+            if(pGrafCt>0){
+                insertNode()   // 当nodeChgArea中有元素的时候才会调用插入节点
+                break
+            }
+        case 2:
+            alert("No valid action was chosen")
+    }
+
+    document.getElementById("grafCount").options.length = 0   // 清空select中的options
+
+    for (var i=0; i<nodeChgArea.getElementsByTagName("p").length; i++){   // 根据nodeChgArea在创建对应的select中的options标签
+        document.getElementById("grafCount").options[i] = new Option(i+1)
+    }
+
+    evt.preventDefault()   // 终止事件继续执行
+}
+</script>
+</html>
+
+
+# 替换节点
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form id="theForm">
+        <p><textarea id="textArea" cols="30" rows="10"></textarea></p>
+        <p>
+            <label><input type="radio" name="nodeAction">Add Node</label>
+            <label><input type="radio" name="nodeAction">Delete Node</label>
+            <label><input type="radio" name="nodeAction">Insert brfore node</label>
+            <label><input type="radio" name="nodeAction">Replace Node</label>
+        </p>
+        Pragraph #: <select id="grafCount"></select>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="modifiable"></div>
+</body>
+<script>
+window.addEventListener("load", initAll, false)
+var nodeChgArea
+
+function initAll(){
+    document.getElementById("theForm").addEventListener("submit", nodeChanger, false)   // 为提交绑定nodeChanger事件
+    nodeChgArea = document.getElementById("modifiable")   // 全局变量nodeChgArea, 对应可变区域div
+}
+
+function addNode() {   // 添加一个节点
+    var inText = document.getElementById("textArea").value   // 根据textArea的值创建一个文本节点
+    var newText = document.createTextNode(inText)
+
+    var newGraf = document.createElement("p")   // 创建一个新的p元素节点, 并将刚创建的文字节点作为子节点加入其中
+    newGraf.appendChild(newText)
+
+    nodeChgArea.appendChild(newGraf)   // 向nodeChgArea中添加新建的p元素节点
+}
+
+function delNode(){   // 删除节点
+    var grafChoice = document.getElementById("grafCount").selectedIndex   // 从select中获取要删除的节点号
+    var allGrafs = nodeChgArea.getElementById("p")   // 获取nodeChgArea中的所有的p元素节点
+    var oldGraf = allGrafs.item(grafChoice)   // 从节点中找到对应节点号的元素
+
+    nodeChgArea.removeChild(oldGraf)   // 删除节点
+}
+
+function insertNode() {   // 插入节点
+    var grafChoice = document.getElementById("grafCount").selectedIndex   // 获取选中的节点
+    var inText = document.getElementById("textArea").value
+
+    var newText = document.createTextNode(inText)   // 根据textArea的值, 创建一个文本节点, 并在创建一个新的p元素节点, 添加文本节点
+    var newGraf = document.createElement("p")
+    newGraf.appendChild(newText)
+
+    var allGrafs = nodeChgArea.getElementsByTagName("p")   // 获取nodeChgArea中的所有p元素标签
+    var oldGraf = allGrafs.item(grafChoice)   // 更具选中的节点的参数, 获取对应的p元素节点
+
+    nodeChgArea.insertBefore(newGraf, oldGraf)   // 在旧的节点后面插入新的节点
+}
+
+function replaceNode() {
+    var grafChoice = document.getElementById("grafCount").selectedIndex   // 获取选中节点
+    var inText = document.getElementById("textArea").value
+
+    var newText = document.createTextNode(inText)   // 根据textArea的值, 创建一个文本节点, 并在创建一个新的p元素节点, 添加文本节点
+    var newGraf = document.createElement("p")
+    newGraf.appendChild(newText)
+    var allGrafs = nodeChgArea.getElementsByTagName("p")   // 获取选中的p元素节点
+    var oldGraf = allGrafs.item(grafChoice)
+
+    nodeChgArea.replaceChild(newGraf, oldGraf)   // 使用新的p元素节点替换旧的元素节点
+}
+
+
+function nodeChanger(evt) {   // 监听提交
+    var actionType = -1   // 处理动作标记
+    var pGrafCt = nodeChgArea.getElementsByTagName("p").length   // nodeChgArea中p元素标签的个数pGrafCt
+    var radioButtonSet = document.getElementById("theForm").nodeAction   // 获取表单内radio值
+
+    for(var i=0; i<radioButtonSet.length; i++) {
+        if (radioButtonSet[i].checked){   // 获取被选中的radio, 并将其的下标号赋给actionType
+            actionType = i
+        }
+    }
+
+    switch(actionType){   // 通过actionType来选取操作
+        case 0:
+            addNode()  // 添加一个节点
+            break
+        case 1:
+            if(pGrafCt>0){
+                delNode()   // 当nodeChgArea中有元素的时候才会调用插入节点
+                break
+            }
+        case 2:
+            if(pGrafCt>0){
+                insertNode()
+                break
+            }
+        case 3:
+            if(pGrafCt>0){
+                replaceNode()
+                break
+            }    
+        default:
+            alert("No valid action was chosen")
+    }
+
+    document.getElementById("grafCount").options.length = 0   // 清空select中的options
+
+    for (var i=0; i<nodeChgArea.getElementsByTagName("p").length; i++){   // 根据nodeChgArea在创建对应的select中的options标签
+        document.getElementById("grafCount").options[i] = new Option(i+1)
+    }
+
+    evt.preventDefault()   // 终止事件继续执行
+}
+</script>
+</html>
+
+# 用对象字面量编写代码
+
+
+<script>
+window.addEventListener("load", initAll, false)
+
+function initAll() {
+    document.getElementById("theForm").addEventListener("submit", nodeChanger, false)
+    chgNodes.init()   // 使用对象字面量chgNodes中的init对象, 其将会为chgNodes创建一个nodeChgArea对象
+}
+
+function nodeChanger(evt){
+    return chgNodes.doAction(evt)   // 处理表单提交事件
+}
+
+var chgNodes = {
+    actionType: function() {   // 查看在表单中的radio选中情况, 将其下标返回
+        var radioButtonSet = document.getElementById("theForm").nodeAction
+        for (var i=0; i<radioButtonSet.length; i++){
+            if (radioButtonSet[i].checked){return i}
+        }
+        return -1
+    },
+    
+    allGrafs: function() {   // 返回nodeChgAre中的所有的p标签元素
+        return this.nodeChgArea.getElementsByTagName("p")
+    },
+
+    pGrafCt: function() {   // 返回所有的标签的个数
+        return this.allGrafs.length
+    },
+
+    inText: function() {   // 返回textArea中的值
+        return document.getElementById("textArea").value
+    },
+
+    newText: function() {   // 根据textArea中的值创建一个新的文本节点
+        return document.createTextNode(this.inText())
+    },
+
+    grafChoice: function() {   // 获取select标签的选中的值
+        return document.getElementById("grafCount").selectedIndex
+    },
+
+    newGraf: function() {   // 新创建一个p标签元素节点, 并将之前创建的文本节点加入
+        var myNewGraf = document.createElement("p")
+        myNewGraf.appendChild(this.newText)
+        return myNewGraf
+    },
+
+    oldGraf: function() {   // 返回根据select选中值的对应的p标签元素
+        return this.allgrafs().item(this.grafChoice())
+    },
+
+    doAction: function(evt) {   // 用于处理表单的提交事件
+        switch(this.actionType()){
+            case 0:
+                this.nodeChgArea.appendChild(this.newGraf())
+                break
+            case 1:
+                if (this.pGrafCt()>0){
+                    this.nodeChgArea.removeChild(this.oldGraf())
+                    break
+                }
+            case 2:
+                if (this.pGrafCt()>0){
+                    this.nodeChgArea.insertBefore(this.oldGraf())
+                    break
+                }
+            case 3:
+                if (this.pGrafCt()>0){
+                    this.nodeChgArea.replaceChild(this.newGraf(), this.oldGraf())
+                    break
+                }
+            default: alert("No valid action was chosen")
+        }
+        document.getElementById("grafCount").options.length = 0   // 每次提交后都将重置select中的标签, 并将新的有的p标签个数及值交于select
+        
+        for (var i=0; i<this.pGrafCt(); i++){
+            document.getElementById("grafCount").options[i] = new option(i + 1)
+        }
+
+        evt.preventDefault()
+    },
+
+    init: function(){   // 创建nodeChgArea
+        this.nodeChgArea = document.getElementById("modifiable")
+    }
+}
+</script>

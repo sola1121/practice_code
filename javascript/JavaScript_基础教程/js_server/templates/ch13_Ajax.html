@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <a id="makeTextRequest" href="gAddress.txt">request a text file</a>
+    <a id="makeXMLRequest" href="us-states">request an Xml</a>
+    <div id="updateArea"></div>
+</body>
+<script>
+window.addEventListener("load", initAll, false)
+
+var xhr = false   // 用于记录的 XMLHttpRequest对象
+
+function initAll() {
+    document.getElementById("makeTextRequest").addEventListener("click", getNewFile, false)
+    document.getElementById("makeXMLRequest").addEventListener("click", getNewFile, false)
+}
+
+function getNewFile(evt){   // 单击事件, 调用makeRequest
+    makeRequest(this.href)
+    evt.preventDefault()   // 不会加载新的网页
+}
+
+function makeRequest(url){   // 传入请求的地址
+    if (window.XMLHttpRequest){   // 现代浏览器支持一个本机的XMLHttpRequest对象, 作为window的属性
+        xhr = new XMLHttpRequest()
+    } else {
+        if(window.ActiveXObject){   // 微软的IE浏览器, 得先检查是否支持ActiveX, 支持才能创建
+            try {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP")
+            } catch (e) {}
+        }
+    }
+
+    if (xhr) {   // 获取到了XMLHttpRequest对象, 在下面的代码中配置要发送的XMLHttpRequest对象
+        xhr.addEventListener("readstatechange", showContents, false)   // XMLHttpRequest对象的readystate属性发生改变绑定的事件
+        xhr.open("GET", url, true)
+        xhr.send(null)
+    } else {   // 如果没有XMLHttpRequest对象那么在页面中提示错误信息
+        document.getElementById("updateAre").innerHTML = "Sorry, coundn't create an XMLHttpRequest"
+    }
+
+    function showContents() {
+        if (xhr.readyState == 4){   // 查看readyState属性, 状态码为4, 表示已经完成对象初始化.
+            if (xhr.status == 200){   // 服务器返会的状态码200 ok
+            // 一切正常之后执行
+                if (xhr.responseXML && xhr.responseXNL.childNodes.lenght > 0){
+                    var outMsg = getText(xhr.responseXML.getElementsByTagName("choices")[0])
+                } else {
+                    var outMsg = xhr.responseText
+                }
+            // 非正常执行, 及没有返回200状态码
+            } else {
+                var outMsg = "There was a problem with the request " + xhr.status
+            }
+            document.getElementById("updateArea").innerHTML = outMsg   // 将从服务器获取的内容显示在前端界面
+        }
+
+        function getText(inVal){   // 监测传入的数据是否有某个属性, 返回不同的内容
+            if (inVal.textContent){
+                return inVal.textContent
+            }
+            return inVal.text
+        }
+    }
+}
+</script>
+</html>

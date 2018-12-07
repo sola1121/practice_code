@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Here</h2>
+</body>
+<script>
+    window.onload = function() {
+        document.onmousemove = pointShow
+    }
+
+    function pointShow(evt) {
+        var h2 = document.getElementsByTagName("h2")
+        console.info(h2)
+        h2[0].innerText = String(evt.clientX) + ", " + String(evt.clientY)
+    }
+
+    
+</script>
+</html>

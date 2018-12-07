@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <p>
+        <input type="text" pattern="[0-9]*" placeholder="Zip code"><br>
+        <input type="email" placeholder="Enter your email address" size="40">
+    </p>
+    <p>
+        Lat: <input type="text" id="lat_field" name="latitude">
+        Lng: <input type="text" name="longitude" id="lng_field">
+    </p>
+    <a href="http://maps.apple.com?z=16&amp;ll=" id="mapQuery">View address on map</a>
+</body>
+<script>
+window.addEventListener("load", getLocation, false)
+
+function getLocation(){
+    if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+            function(position){
+                document.getElementById("lat_field").value = position.coords.latitude
+                document.getElementById("lng_field").value = position.coords.longitude
+
+                document.getElementById("mapQuery").href += position.coords.latitude + ", " + position.coords.longitude
+            }
+        )
+    }
+}
+</script>
+</html>

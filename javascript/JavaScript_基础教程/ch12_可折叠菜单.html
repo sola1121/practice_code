@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #FFF;
+            color: #000;
+        }
+
+        div{margin-bottom: 10px;}
+
+        ul.menu {
+            display: none;
+            list-style-type: none;
+            margin-top: 5px;
+        }
+
+        a.menuLink {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* 实现下拉菜单 */
+
+        ul.menu li {
+            font: 1em arial, helvetica, sans-self;
+            padding-left: 10px;
+        }
+
+        a.menuLink, li a {
+            text-decoration: none;
+            color: #006;
+        }
+
+        a.menuLink {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        ul.menu li a:hover {
+            background-color: #006;
+            color: #FFF;
+            padding-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Shakespeare's plays</h2>
+    <div>
+        <a href="menu1.html" class="menuLink">Comedies</a>
+        <ul class="menu" id="menu1">
+            <li><a href="pg1.html">1======1</a></li>
+            <li><a href="pg2.html">2======2</a></li>
+            <li><a href="pg3.html">3======3</a></li>
+            <li><a href="pg4.html">4======4</a></li>
+        </ul>
+    </div>
+    <div>
+        <a href="menu2.html" class="menuLink">Tragedies</a>
+        <ul class="menu" id="menu2">
+            <li><a href="pg5.html">5=======5</a></li>
+            <li><a href="pg6.html">6=======6</a></li>
+            <li><a href="pg7.html">7=======7</a></li>
+        </ul>
+    </div>
+    <div>
+        <a href="menu3.html" class=menuLink>Histories</a>
+        <ul class="menu" id="menu3">
+            <li><a href="pg8.html">8=====8</a></li>
+            <li><a href="pg9.html">9=====9</a></li>
+        </ul>
+    </div>
+</body>
+
+<script>
+window.addEventListener("load", initAll, false)
+
+function initAll() {
+    var allLinks = document.getElementsByTagName("a")
+
+    for (var i=0; i<allLinks.length; i++){
+        if (allLinks[i].className.indexOf("menuLink") > -1){   // 查找具有menuLink的超链接
+            allLinks[i].addEventListener("click", clickHandler, false)   // 处理单击事件
+            allLinks[i].addEventListener("mouseover", toggleMenu, false)   // 处理鼠标移入事件
+        }
+    }
+}
+
+function clickHandler(evt) {   // 当单击后按照默认的方式处理
+    evt.preventDefault()
+}
+
+function toggleMenu(evt){   // 当鼠标移上超链接的时候
+    var startMenu = this.href.lastIndexOf("/") + 1
+    var stopMenu = this.href.lastIndexOf(".")
+    var thisMenuName = this.href.substring(startMenu, stopMenu)
+
+    var menuParent = document.getElementById(thisMenuName).parentNode   // 获取超链接父节点, 及ul
+    var thisMenuStyle = document.getElementById(thisMenuName).style   // 在此控制显示与隐藏
+    thisMenuStyle.display = "block"
+
+    menuParent.addEventListener("mouseout", function() {thisMenuStyle.display="none"}, false)
+    menuParent.addEventListener("mouseover", function() {thisMenuStyle.display="block"}, false)
+    // if (thisMenuStyle.display == "block"){
+    //     thisMenuStyle.display = "none"
+    // } else {
+    //     thisMenuStyle.display = "block"
+    // }
+    
+    console.log(evt)
+    evt.preventDefault()
+}
+</script>
+
+</html>

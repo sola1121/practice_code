@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    cookieName=cookieValue;expires=expirationDateGMT;path=URLpath;domain=siteDomain
+    cookie的格式, 必须给cookie命名并且赋值
+    <form action="">
+        <h1>Enter Your Name: <input type="text" id="nameField"></h1>
+    </form>
+</body>
+<script>
+window.addEventListener("load", nameFieldInit, false)
+
+function nameFieldInit() {
+    var userName = ""
+    if (document.cookie != "") {   // 判断是否已有cookie, 如果当前页面有, 将会获取其中的值
+        userName = document.cookie.split("=")[1]
+    }
+
+    document.getElementById("nameField").value = userName
+    document.getElementById("nameField").onblur = setCookie   // 当离开字段的时候, 触发设置cookie
+    document.getElementById("cookieField").onsubmit = setCookie   // 当提交表单的时候, 触发设置cookie
+}
+
+function setCookie() {
+    var expireDate = new Date()   // 创建一个新的日期对象, 用于cookie的过期时间, 这样就日期的时间就是浏览器标准识别的了
+    expireDate.setMonth(expireDate.getMonth() + 6)   // 将新建的日期对象的月份加6, 之后用于设置cookie过期就是6个月了
+
+    var userName = document.getElementById("nameField").value   // 获取表单字段中的userName的值
+    document.cookie = "userName=" + userName + ";expires=" + expireDate.toGMTString()   // 写入cookie, 分别是cookie名字(userName), 和过期时间
+
+    document.getElementById("nameField").blur()   // 用于IE, 触发离开
+    return false
+}
+
+</script>
+</html>
+
+
+# 读取所有cookie
+<script>
+window.addEventListener("load", showCookie, false)
+
+function showCookie() {
+    var outMsg = ""
+
+    if (document.cookie == ""){   // 当本页没有cookie的时候
+        outMsg = "There is no cookies here"
+    } else {
+        var thisCookie = document.cookie.split("; ")   // 使用 "; " 将多段黏着的cookie字符串分开 
+
+        for (var i=0; i<thisCookie.length; i++){   // 遍历所有的cookie
+            outMsg += "Cookie name is " + thisCookie[i].split("=")[0]   // cookie的key
+            outMsg += ", and the value is " + thisCookie[i].split("=")[1] + "<br>"   // cookie的value
+        }
+    }
+    document.getElementById("cookieData").innerHTML = outMsg
+}
+
+</script>
+
+
+<script>
+window.addEventListener("load", initPage, false)
+
+function initPage() {
+    var expireDate = new Date()   // 新建日期对象
+    expireDate.setMonth(expireDate.getMonth() + 6)   // 用于设置过期时间的6个月
+
+    var hitCt = parseInt(cookieValue("pageHit"))   // 访问当前页多少次, 并设置
+    htCt ++
+
+    document.cookie = "pageHit=" + hitCt + ";expires=" + expireDate.toGMTString()   // 将次数和过期时间存入cookie
+    document.getElementById("pageHits").innerHTML = "You have visited this page " + hitCt + "times."   // 在网页中显示
+}
+
+function cookieVal(cookieName) {   // 获取cookie中对应cookie名的值
+    var thisCookie = document.cookie.split("; ")
+
+    for (var i=0; i<thisCookie.length; i++){
+        if (cookieName == thisCookie[i].split("=")[0]){   // 参数名和cookie中的key相同, 取其值
+            return thisCookie[i].split("=")[1]
+        }
+    }
+    return 0
+}
+
+</script>
+
+
+# 删除cookie
+
+<script>
+window.addEventListener("load", cookieDelete, false)
+
+function cookieDelete() {
+    var cookieCt = 0
+    
+    if (document.cookie != "" && confirm("Do you want to delete the cookies")){
+        var thisCookie = document.cookie.split("; ")
+        cookieCt = thisCookie.length
+        
+        var expireDate = new Date()
+        expireDate.setDate(expireDate.getDate()-1)   // 将时间设为-1了, 用于设置过期时间
+        
+        for (var i=0; i<cookieCt; i++){
+            var cookieName = thisCookie[i].split("=")[0]
+            document.cookie = cookieName + "=;expires=" + expireDate.toGMTString()
+        }
+    }
+    document.getElementById("cookieData").innerHTML = "Number of cookies deleted: " + cookieCt
+}
+</script>
+
+
+# 处理多个cookie
+
+<script>
+window.addEventListener("load", initPage, false)
+
+function initPage () {
+    var now = new Date()   // 当前时间, 用于更新上一次浏览的时间
+    var expireDate = new Date()
+    expireDate.setMonth(expireDate.getMonth()+6)   // 设置过期时间6个月
+
+    var hitCt = parseInt(cookieVal("pageHit"))   // 使用名称从cookie中获取对应值, 这个是记录点击次数的
+    hitCt ++
+
+    var lastVisit = cookieVal("pageVisit")   // 上一次浏览的时间
+    if (lastVisit == 0){   // 没有浏览过
+        lastVisit = ""
+    }
+
+    document.cookie = "pageHit=" + "hitCt" + ";expires=" + expireDate.toGMTString()
+    document.cookie = "pageVisit=" + now + ";wxpires=" + expireDate.toGMTString()
+    
+    // 在页面中显示cookie中的信息
+    var outMsg = "You have vieited this page " + hitCt + "times."
+    if (lastVisit != ""){
+        outMsg += "<br>Your last visit was " + lastVisit
+    }
+    document.getElementById("cookieData").innerHTML = outMsg
+}
+
+function cookieVal(cookieName) {
+    var thisCookie = document.cookie.split("; ")
+
+    for (var i=0; i<thisCookie.length; i++){
+        if (cookieName == thisCookie[i].split("=")[0]){
+            return thisCookie[i].split("=")[1]
+        }
+    }
+    return 0   // 失败返回0
+}
+</script>
+
+
+# 显示新内容提醒信息
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <p>Negrino and smith's most recent books:</p>
+    <p id="New-20140601"><a href="http://www.javascriptworld.com">JavaScript: Visual Quick Start Guide</a></p>
+    <p id="New-20130812"><a href="http://www.dreaeaverbook.com">dreamweaver CC: Vitual Quick Start</a></p>
+</body>
+<script>
+window.addEventListener("load", initPage, false)
+
+function initPage() {
+    var now = new Date()
+    var lastVisit = new Date(cookieVal("pageVisit"))
+    var expireDate = new Date()
+    expireDate.setMonth(expireDate.getMonth() + 6)
+
+    Document.cookie = "pageVisit=" + now + ";expires=" + expireDate.toGMTString()   // 设置拜访
+    var allGrafs = document.getElementsByTagName("p")   // 获得所有的p标签
+
+    for (var i=0; i<allGrafs.length; i++){
+        if (allGrafs[i].id.indexOf("New-") != -1){   // 遍历到所有p标签中的id为New-开头的
+            newCheck(allGrafs[i], allGrafs[i].id.substring(4))   // 将当前的标签对象, 和代表日期的字串传入newCheck函数
+        }
+    }
+
+    function newCheck (grafElement, dtString) {           // 处理当前标签, 及其中所带的日期
+        var yyyy = parseInt(dtString.substring(0, 4), 10)
+        var mm = parseInt(dtString.substring(4,6), 10)
+        var dd = parseInt(dtString.substring(6,8), 10)
+        var lastChgd = new Date(yyyy, mm-1, dd)
+
+        if (lastChgd.getTime() > lastVisit.getTime()){   // 如果当前的标签的时间比现在提前一个月, 那么就会将传入的这个标签增加className属性
+            grafElement.className += 'newImg'
+        }
+    }
+
+    function cookieVal(cookieName) {
+        var thisCookie = document.cookie.split("; ")
+
+        for (var i=0; i<thisCookie.length; i++){
+            if (cookieName == thisCookie[i].split("=")[0]){
+                return thisCookie[i].split("=")[1]
+            }
+        }
+        return 0   // 失败返回0
+    }
+}
+
+</script>
+</html>
