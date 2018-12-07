@@ -1,6 +1,7 @@
 import time
 import threading
 
+# 通过threading.current_thread() 获得当前的线程对象
 
 def first_function():
     print(threading.current_thread().getName() + " is starting.\n")
