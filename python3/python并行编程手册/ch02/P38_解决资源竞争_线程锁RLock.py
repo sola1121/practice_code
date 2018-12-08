@@ -1,6 +1,9 @@
 import time
 import threading
 
+"""
+RLock 又叫做递归锁, 其同一锁可以多次acquire, 但是就如同递归一样, 上了多少层, 就得下多少层回来, 所以也要对等数量的release
+"""
 
 class Box:
     lock = threading.RLock()
