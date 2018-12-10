@@ -13,7 +13,7 @@ class Consumer(threading.Thread):
         global condition
         global items
         condition.acquire()   # 需要共享资源, 接下来会上锁
-        if len(items) == 0:
+        if len(items) == 0:   # 当itmes中的元素为0的时候, 条件将为wait
             condition.wait()
             print("Consumer notify: no item to consume")
         items.pop()
@@ -36,7 +36,7 @@ class Producer(threading.Thread):
         global condition
         global items
         condition.acquire()   # 需要共享资源, 接下来会上锁
-        if len(items)  == 10:
+        if len(items)  == 10:   # 当items中的元素为0的时候, 条件将为wait
             condition.wait()
             print("Producer notify: items produced are " + str(len(items)))
             print("Producer notify: stop the condition!!")

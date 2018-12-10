@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+func echo(s string) {
+	fmt.Println(s)
+}
+
 func main() {
 	s := "Hello World"
 	t := "Goodby Cruel World"
