@@ -17,12 +17,12 @@ class Box:
 
     def add(self):
         Box.lock.acquire()
-        self.execute(1)
+        self.execute(1)   # 也有Box.lock.acquire
         Box.lock.release()
 
     def remove(self):
         Box.lock.acquire()
-        self.execute(-1)
+        self.execute(-1)   # 也有Box.lock.acquire
         Box.lock.release()
 
 
@@ -61,3 +61,9 @@ if __name__ == "__main__":
     print("%s items still remain in the box "%box.total_items)
 
     # RLock允许在同一线程中被多次acquire
+    # 每个add 和 remove中都包含Rlock的acquire, 而其调用的execute也包含Rlock的acquire,
+    # 就像递归一样, 如果使用普通的Lock, 这将会引发异常.
+
+    # 只想让获取锁的线程来释放锁, 就需要使用RLock
+    # 如果希望在类外面能实现线程安全的访问, 同时又使用类里面的方法, RLock就很有用
+    # 因为不用担心acquire冲突, 每个方法中都可以包含acquire

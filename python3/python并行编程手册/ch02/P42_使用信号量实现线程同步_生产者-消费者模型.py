@@ -23,7 +23,7 @@ def consumer():
 
 def producer():
     global item
-    time.sleep(10)
+    time.sleep(3)
     item = random.randint(0, 1000)
     print("Producer notify: producer item number %s" %item)
     # 释放信号量, 将内部的counter值加1, 当其值等于0时, 另一个线程会在此等待它的值变为大于0, 并唤醒该线程.
