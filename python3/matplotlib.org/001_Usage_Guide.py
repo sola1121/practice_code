@@ -1,3 +1,12 @@
+"""
+matplotlib是分级化的, 其下层最顶层就是pyplot, 这是一个高级的对象的封装
+调用他会自动的创建figure(图层), Axes(坐标域), axis(坐标轴)等
+backends概念, 使用什么样的终端或者说什么样的软体来输出图表表现
+涉及是否使用交互的方式输出或使用非交互的形式将内容输出
+性能优化, matplotlib.rcParams["path.simplify"]参数的使用
+matplotlib.pyplot.plot(markevery=int_object) 对于Line2D对象,标价
+"""
+
 #%%
 import matplotlib
 import numpy
@@ -90,7 +99,7 @@ import matplotlib
 matplotlib.pyplot.ioff()   # 关闭了交互, 将会依次在界面上画出三条线, 挨个画出
 # matplotlib.pyplot.ion()   # 开启交互, 将会在同一图层上画出三条线, 即一次画出
 for i in range(3):
-    matplotlib.pyplot.plot(numpy.random.rand(10))
+    matplotlib.pyplot.plot(numpy.random.rand(10), markevery=10)
     matplotlib.pyplot.show()
 
 
@@ -112,3 +121,33 @@ matplotlib.pyplot.show()
 matplotlib.rcParams["path.simplify_threshold"] = 1.0   # 限制越高, 结果产生的越快
 matplotlib.pyplot.plot(y)
 matplotlib.pyplot.show()
+
+
+#%%
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.rcParams['path.simplify_threshold'] = 1.0
+
+# Setup, and create the data to plot
+y = np.random.rand(100000)
+y[50000:] *= 2
+y[np.logspace(1,np.log10(50000), 400).astype(int)] = -1
+mpl.rcParams['path.simplify'] = True
+
+mpl.rcParams['agg.path.chunksize'] = 0
+plt.plot(y)
+plt.show()
+
+mpl.rcParams['agg.path.chunksize'] = 10000
+plt.plot(y)
+plt.show()
+
+
+# 通过使用fast来提速
+import matplotlib.style as mplstyle
+mplstyle.use('fast')
+
+# fast style 自动的在simplify_threshold和chunksize上使用
+# 其他的style
+mplstyle.use(['dark_background', 'ggplot', 'fast'])
