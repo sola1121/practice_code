@@ -1,3 +1,7 @@
+"""
+Pipe 封装的 multiprocessing.connection.Condition 对象
+"""
+
 import multiprocessing
 
 def create_items(pipe):
