@@ -12,6 +12,8 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+golang/go语言入门经典/ch21/P229_21.5/example.txt
+
 # Python
 # Byte-compiled / optimized / DLL files
 */__pycache__
