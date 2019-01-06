@@ -28,6 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer file.Close()
 	// 新建一个toml文件
 	encodeFile := toml.NewEncoder(file)
 	err = encodeFile.Encode(config)
