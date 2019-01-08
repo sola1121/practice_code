@@ -1,0 +1,77 @@
+Go 语言预声明的标识符包括: 关键字, 内置数据类型, 常量值, 内置函数, 空白标识.
+      用户自定义标识符用在: 包名, 函数名, 自定义类型名, 变量名, 常量名.
+
+关键字25个
+  引导程序整体结构:
+    package  定义包名
+    import   导入包名
+    const    声明常量
+    var      声明变量
+    func     声明函数
+    defer    延迟执行
+    go       并发执行
+    return   函数返回
+  声明复合数据类型:
+    struct     定义结构类型
+    interface  定义接口类型
+    map        声明或创建字典类型
+    chan       声明或创建通道类型
+  控制程序结构:
+    if  else      if else语句
+    for  range  break  continue      for循环常用
+    switch  select  type  case default  fallthrough      switch和select语句常用
+    goto     goto跳转语句
+
+内置类型20个
+  数值
+    整型
+        byte
+        int   int8   int16   int32   int64
+        uint  uint8  uint16  uint32  uint64
+        uintptr
+    浮点型
+        float32  float64
+    复数型
+        complex64  complex128
+    字符和字符串型
+        rune  string
+    接口型
+        error
+    布尔型
+        bool
+
+内置函数15个
+    make
+    new
+    len
+    cap
+    append
+    copy
+    delete
+    panic
+    recover
+    close
+    complex
+    real
+    image
+    print
+    println
+
+常量
+    true  flase
+    iota
+    nil
+
+空白标识
+    _
+
+注: 
+    byte是unit8的别名, rune是int32的别名
+
+Go源程序的基本构成
+    (1) 关键字引导程序的基本结构
+    (2) 内置类型标识符辅助声明变量和常量
+    (3) 字面量辅助变量和常量的初始化
+    (4) 分隔符帮助Go编辑器识别各个token
+    (5) 操作符和变量, 关键字一起构成丰富的语法单元
+
