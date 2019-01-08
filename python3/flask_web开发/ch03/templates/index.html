@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>好歹也是个主页.</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title%}Flasky - Page Not Found{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>这就是主页了 ⚆_⚆</h1>
+    <p>当地时间是: {{ moment(current_time).format("LLL") }}</p>
+    <p>同步: {{ moment(current_time).fromNow(refresh=True) }}</p>
+</div>
+{% endblock %}
