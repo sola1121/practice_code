@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{# 从bootsrap插件中导入用于渲染表单页面的宏 #}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title%}具有表单的页面{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h2>Hello, {% if name %}{{ name }} {% else %}Stranger{% endif %}</h2>
+    </div>
+    {{ wtf.quick_form(form_field) }}
+{% endblock %}
