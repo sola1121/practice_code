@@ -1,0 +1,78 @@
+export FLASK_APP=hello05.py
+
+flask shell
+
+# 创建数据库
+>>> from hello05 import db
+>>> db.create_all()
+
+# 加入数据, 未有指定id, 因为现在大部分数据库都会自动管理主键
+>>> from hello05 import Role, User
+>>> admin_role = Role(name="Admin")
+>>> mod_role = Role(name="Moderator")
+>>> user_role = Role(name="User")
+
+>>> user_john = User(username="john", role=admin_role)
+>>> user_susan = User(username="susan", role=user_role)
+>>> user_david = User(username="david", role=user_role)
+
+# 写入数据库缓存并提交, 使用的add方法, 也可使用add_all(list), 一次性提交
+>>> db.session.add(admin_role)
+>>> db.session.add(mod_role)
+>>> db.session.add(user_role)
+>>> db.session.add(user_john)
+>>> db.session.add(user_susan)
+>>> db.session.add(user_david)
+# 在未提交前可以使用db.session.rollback()回滚
+>>> db.session.commit()
+>>>
+
+# 修改行
+>>> admin_role.name = "Administrator"
+>>> db.session.add(admin_role)
+>>> db.session.commit()
+
+# 删除行
+>>> db.session.delete(mod_role)
+>>> db.session.commit()
+
+# 查询行
+# 使用模板对象的query对象
+>>> Role.query.all()
+[<Role 'Administrator'>, <Role 'User'>]
+>>> User.query.all()
+[<User 'john'>, <User 'susan'>, <User 'david'>]
+>>> User.query.filter_by(role=user_role).all()
+[<User 'susan'>, <User 'david'>]
+# 查看原生的sql语句, 只需要把查询转换为str
+>>> str(User.query.filter_by(role=user_role))
+'SELECT users.id AS users_id, users.username AS users_username, users.role_id AS users_role_id 
+FROM users 
+WHERE ? = users.role_id'
+
+
+# 对数据库进行迁移管理
+# 使用flask-migrate包, 将会新增flask db子命令
+# 初始化, 前提是 flask_migrate.Migrate(app, db)将应用和数据库映射绑定了
+flask db init
+
+# 手动创建Alembic迁移
+flask db revision 
+
+# 自动创建Alembic迁移
+flask db migrate
+
+# 将迁移应用到数据库中
+flask db upgrade
+
+# 将数据库还原迁移前
+flask db downgrade
+
+# 将现有数据库标记为已更新
+flask db stamp
+
+
+
+
+
+
