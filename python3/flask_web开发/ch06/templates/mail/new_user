@@ -1,0 +1,2 @@
+{{ new_user }} have been created.
+from {{ host }} .
