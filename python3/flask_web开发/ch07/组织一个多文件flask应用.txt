@@ -1,0 +1,26 @@
+|-flasky
+    |-app/
+        |-templates/
+        |-static/
+        |-main/
+            |-__init__.py
+            |-errors.py
+            |-forms.py
+            |-views.py
+        |-__init__.py
+        |-email.py
+        |-models.py
+    |-migrations/
+    |-tests/
+        |-__init__.py
+        |-test*.py
+    |-venv/
+        |-requirements.txt
+        |-config.py
+        |-flasky.py
+
+
+Flask 应用一般保存在名为app的包中
+数据库迁移脚本在migrations目录中
+单元测试在tests包中编写
+Python的虚拟环境在venv目录中
