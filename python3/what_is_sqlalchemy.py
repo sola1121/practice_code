@@ -24,7 +24,7 @@ class Departments(Model):
 
 # 创建事务(会话)
 session = create_session(bind=db_engine)
-results = session.query(Departments).all()
+results = session.query(Departments).order_by("dept_no").all()
 
 for result in results:
     print("部门号: ", result.dept_no, "   部门名: ", result.dept_name)
