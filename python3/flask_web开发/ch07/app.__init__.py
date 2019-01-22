@@ -27,7 +27,7 @@ def create_app(config_name):
     
     # 添加路由和自定义错误页面
     # 对app/main/__init__.py中蓝本的使用
-    from .main import main 按时 main_blueprint
+    from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
     return app

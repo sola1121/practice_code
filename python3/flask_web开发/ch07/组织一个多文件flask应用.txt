@@ -15,9 +15,9 @@
         |-__init__.py
         |-test*.py
     |-venv/
-        |-requirements.txt
-        |-config.py
-        |-flasky.py
+    |-requirements.txt
+    |-config.py
+    |-flasky.py
 
 
 Flask 应用一般保存在名为app的包中
