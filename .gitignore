@@ -131,3 +131,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# 机器学习快速入门, 临时数据文件排除
+python3/机器学习快速入门/tmp/*

@@ -12,7 +12,7 @@ app.config["MAIL_PASSWORD"] = os.environ.get("mail_pass")
 
 mail = Mail(app)
 
-msg = Message("Mail From Flask(test)", sender="发送@qq.com", recipients=["收件@qq.com", "收件@qq.com"])
+msg = Message("Mail From Flask(test)", sender="发送@qq.com", recipients=["收件1@qq.com", "收件2@qq.com"])
 msg.body = """使用flask-mail插件来进行邮件发送
 这是使用普通文.
 """
