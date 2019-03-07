@@ -1,6 +1,6 @@
 # https://docs.sqlalchemy.org/en/rel_1_2/orm/tutorial.html
 
-### Connection ###
+### NOTE: Connection ###
 from sqlalchemy import create_engine
 
 # echo 参数, 使用了内建的logging库, 当为True的时候, 将会在终端打印详生成的SQL语句, 为False将不会打印
@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 engine = create_engine('sqlite:///:memory:', echo=True)
 
 
-### Declare a Mapping ###
+### NOTE: Declare a Mapping ###
 # 当使用ORM的时候, 配置的过程开始于描述一个数据库, 然后自定义一些类与其建立映射.
 # 在现代的SQLAlchemy中, 这两个进程通常是一起执行的, 使用一个可以创建包含指令去描述一个真实的数据库表并与其映射的类, 该系统叫做Declarative
 # 被映射的类使用的Declarative系统根据一个维持一个类目录和关联表的基类被定义. 被称为declarative base class
@@ -34,12 +34,12 @@ class User(base):
                 % (self.id, self.name, self.fullname, self.nickname)
 
 # 一个使用Declarative的子类至少要有__tablename__和一个Column()是主键.
-# SQLAlchemy从不对类引用的表做任何假设, 包括它没有名称，数据类型或约束的内置约定.
-# 但这并不意味着需要样板; 相反, 我们鼓励您使用辅助函数和mixin类创建自己的自动约定.
+# SQLAlchemy从不对类引用的表做任何假设, 包括它没有名称，数据类型或约束的内置事务.
+# 但这并不意味着需要样板; 相反, 我们鼓励您使用辅助函数和mixin类创建自己的自动事务.
 # 当类的结构确定后, Declarative将会使用一个被叫做descriptors的Python存取替换所有的Column对象, 这个进程叫做 instrumentation.
 
 
-### Create a Schema ###
+### NOTE: Create a Schema ###
 # 通过Declarative System使用相应命令来构建的User类, 其中的这些描述被叫做 table metadata. 
 # 被SQLAlchemy用来代表一个指定的表的信息称为Table对象. 可以从相应表对象的__table__属性中看到定义.
 print(User.__table__)
@@ -82,7 +82,7 @@ session = Session()
 # 当实例化的session对象第一次使用后, 其将会连接到一个由Engine对象维护的内存池中, 直到commit或者close会话.
 
 
-### Adding and Updating Objects ###
+### NOTE: Adding and Updating Objects ###
 # 将ed_user对象加入session
 ed_user = User(name="ed", fullname="Ed Jones", nickname="edsnickname")
 session.add(ed_user)   # ed_user 实例进入pending状态, 还没有真正的进入数据库
@@ -122,11 +122,151 @@ print(ed_user.id)   # 数据库将会自动分配id, 这些都是现代数据库
 # 重新载入的等级可以通过Session配置.
 
 
-### Rolling Back ###
+### NOTE: Rolling Back ###
 # 当Session在定义中工作时, 可以使用roll back改变所做的工作.
 ed_user.name = "Edwardo"
 fake_user = User(name="fakeuser", fullname="Invalid", nickname="12345")   # 添加一个用于实验的用户
 session.add(fake_user)
 search_result = session.query(User).filter(User.name.in_(["Edwardo", "fakeuser"])).all()
+print(search_result)   # 新的更改和用户被缓冲进了事务缓冲区
+# 进行回退
+session.rollback()
+print(fake_user in session)   # 回退后, 是否fake_user还在会话中
+search_result = session.query(User).filter(User.name.in_(["ed", "fakeuser"])).all()
+print(search_result)   # 再次查询是否存在相关更改和用户, 将会只显示更改前的Ed_user
+
+
+### NOTE: Querying ###
+# 使用Session中的query()方法创建Query对象. 这个方法使用任意数量的参数来实现任意的类和instrumented类的描述的组合.
+for instance in session.query(User).order_by(User.id):
+    print(instance.name, instance.fullname)
+
+# Query也可以接受ORM-instrumented描述作为参数. 任何时候当众多类实体或基于列的实体被作为参数传递给query()方法, 结果将会是一个tuple对象.
+for name, fullname in session.query(User.name, User.fullname):
+    print(name, fullname)
+# 由Query对象返回的tuples是named tuples, 由KeyedTuple类提供支持, 并且可以向Python序列对象一样处理.
+# 名称与属性的属性名称以及类名称相同.
+for row in session.query(User, User.name).all():
+    print(row.User, row.name)
+
+# 可以使用由ColumnElement驱动的label()结构表达式对象控制单个列的名字, 就和其他有映射的类参数一样
+for row in session.query(User.name.label("name_label")).all():
+    print(row.name_label)
+
+# 使用aliased()可以赋予一个完整的映射对象别名.
+from sqlalchemy.orm import aliased
+user_alias = aliased(User, name="user_alias")
+for row in session.query(user_alias, user_alias.name).all():
+    print(row.user_alias)
+
+# 使用Query对象的基础操作, 如LIMIT, OFFSET等, 这些大多数可便利的使用Python数组切片和一般与ORDER BY结合的方式实现.
+for u in session.query(User).order_by(User.id)[1:3]:
+    print(u)
+# filter结果, 可以使用根据关键字参数来完成的filter_by()方法来实现.
+for name, in session.query(User.name).filter_by(fullname="Ed Jones"):
+    print(name)
+# filter结果也可以使用filter()方法, 其使用更领货的SQL表达式. 可以在类等级上使用常规的Python操作于映射类.
+for name, in session.query(User.name).filter(User.fullname=="Ed Jones"):
+    print(name)
+
+# Query对象是一个fully generative, 这意味着大多数方法的调用都将会返回一个新的Query对象, 在这之上可以添加其他标准.
+for user in session.query(User).filter(User.name=="ed").filter(User.fullname=="Ed Jones"):
+    print(user)
+
+### common Filter Operation ###
+# 常见的filter()方法操作
+query = session.query(User)
+
+query.filter(User.name=="ed")   # 相等
+query.filter(User.name!="ed")   # 不相等
+query.filter(User.name.like("%ed%"))   # like
+query.filter(User.name.ilike("%ed%"))  # 忽略大小写的like
+query.filter(User.name.in_(["ed", "wendy", "jack"]))    # in
+query.filter(User.name.in_(session.query(User.name).filter(User.name.like("%ed%"))))   # 使用in的联合查询
+query.filter(~User.name.in_(["ed", "wendy", "jack"]))   # not in
+query.filter(User.name==None)   # is null
+query.filter(User.name.is_(None))   # is null
+query.filter(User.name!=None)   # is not null
+query.filter(User.name.isnot(None))   # is not null
+from sqlalchemy import and_
+query.filter(and_(User.name=="ed"), User.fullname=="Ed Jones")   # 使用特殊函数实现的and
+query.filter(User.name=="ed", User.fullname=="Ed Jones")   # 直接通过多参数实现的and
+query.filter(User.name=="ed").filter(User.fullname=="Ed Jones")   # 通过链式查询实现的and
+from sqlalchemy import or_
+query.filter(or_(User.name=="ed", User.name=="wendy"))   # 使用特殊函数实现的or
+query.filter(User.name.match("wendy"))   # match, 其使用数据库特定的MATCH或者CONTINS功能, 因各数据库平台而有差异
+
+### Returning Lists and Scalars ###
+# 返回列表和标量
+# 许多在Query对象上的方法立刻发出SQL并返回从连接的数据库查询的值.
+query = session.query(User).filter(User.name.like("%ed%")).order_by(User.id)
+
+# all() 返回一个list
+print(query.all())
+
+# first() 返回一个值
+print(query.first())
+
+# one() 获取所有的行, 如果结果存在多行(即多个结果)或没有结果, 将会报错
+# print(query.one())
+
+# one_or_none() 和one()类似, 但是当没有结果的时候, 不会报错
+# scalar() 调用one(), 成功时返回第每行的第一列
+
+### Using Textual SQL ###
+# 使用文本化的SQL
+# text() 通过使用text()构建字符串形式的查询, 其可以被灵活的使用在Query对象上, 这种形式被大多数Query方法接受.
+from sqlalchemy import text
+
+for user in session.query(User).filter(text("id<5")).order_by(text("id")).all():
+    print(user.name)
+
+# params() 可以使用基于字符串的SQL，使用冒号指定绑定参数。
+search_result = session.query(User).filter(text("id<:value and name=:name")).params(value=224, name="fred").order_by(User.id).one()
 print(search_result)
+
+# from_statement() 可以使用基于字符串的完整的SQL查询语句, 将text()构造的字符串对象传递给from_statement()就可以.
+# 不需要额外指定, SQL字符串中使用的列名都集基于映射模型中的名字.
+search_result = session.query(User).from_statement(text("SELECT * FROM users where name=:name")).params(name="ed").all()
+print(search_result)
+
+# 当在处理复杂语句的时候对于简单的事例工作通过名字匹配列可能变的不便利, 尤其是其包括复杂的列名或使用匿名的不好匹配特殊名字的ORM构成时.
+# 另外的, 当处理结果行有可以在当前的映射列上直接输入行为是必要的.
+# 在这样的情景下, text()构成允许以字符串形式的SQL连接对应的Core或ORM-mapped列表达式.
+# 可以通过传递列表达式作为位置参数给TextClause.columns()来实现这个.
+stmt = text("SELECT name, id, fullname, nickname FROM users where name=:name")
+stmt = stmt.columns(User.name, User.id, User.fullname, User.nickname)
+search_result = session.query(User).from_statement(stmt).params(name="ed").all()
+print(search_result)
+
+# The TextClause.columns() method now accepts column expressions which will be matched positionally to a plain text SQL result set, 
+# eliminating the need for column names to match or even be unique in the SQL statement.
+
+# 当从text()构造中选择时，查询仍然可以指定要返回哪些列和实体; 也可以单独请求这些列，而不是query(User)，就像在任何其他情况下一样
+stmt = text("SELECT name, id FROM users where name=:name")
+stmt = stmt.columns(User.name, User.id)
+search_result = session.query(User.id, User.name).from_statement(stmt).params(name="ed").all()
+
+### Count ###
+# 计数
+# Query对象的计数方法count()
+count_num = session.query(User).filter(User.name.like("%ed")).count()
+print(count_num)
+
+# 需要独立使用count功能的时候可以从func中取引入, 可以单独对某一列进行统计
+from  sqlalchemy import func
+
+count_num = session.query(func.count(User.name), User.name).group_by(User.name).all()
+print(count_num)   # 统计每个名字有多少重名的
+
+# SELECT count(*) FROM table;
+count_num = session.query(func.count("*")).select_from(User).scalar()
+print(count_num)
+# 如果直接指定计数主键, 以上select_from可以被省略
+count_num = session.query(func.count(User.id)).scalar()
+print(count_num)
+
+
+### NOTE: Building a Relationship ###
+# TODO:
 
