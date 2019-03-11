@@ -12,17 +12,17 @@ engine = create_engine('sqlite:///:memory:', echo=True)
 ### NOTE: Declare a Mapping ###
 # 当使用ORM的时候, 配置的过程开始于描述一个数据库, 然后自定义一些类与其建立映射.
 # 在现代的SQLAlchemy中, 这两个进程通常是一起执行的, 使用一个可以创建包含指令去描述一个真实的数据库表并与其映射的类, 该系统叫做Declarative
-# 被映射的类使用的Declarative系统根据一个维持一个类目录和关联表的基类被定义. 被称为declarative base class
+# 被映射的类使用的Declarative系统根据一个维持一个类目录和关联表的基类被定义. 被称为declarative Base class
 # 我们的应用通常只有一个declarative基础的实例在一个公用导入模板中. 使用declaretive_base()来创建它.
 from sqlalchemy.ext.declarative import declarative_base
 
-base = declarative_base()
+Base = declarative_base()
 
-# 使用declarative base class 来创建一个User表
+# 使用declarative Base class 来创建一个User表
 
 from sqlalchemy import Column, Integer, String, Sequence
 
-class User(base):
+class User(Base):
     __tablename__ = "users"
     id = Column(Integer, Sequence("user_id_seq"), primary_key=True)   # 在Firebird和Oracle中需要加入序列
     name = Column(String(64))
@@ -51,7 +51,7 @@ print(User.__table__)
 # MetaData是一个包含了能够向数据库发出一组有限的schema generation命令的注册处.
 # 当我们的SQLite数据库没有存在users表的时候, 可以使用MetadData来向数据库发出CREATE TABLE命令来创建没有存在的数据库表.
 # 可以执行MetaData.create_all()方法, 传入我们Engine作为数据库链接的来源. 首先将会检查users表的存在, 并在之后产生实际的CREATE TABLE指令.
-print(base.metadata.create_all(engine))   # 对连接引擎使用映射, 创建数据库
+print(Base.metadata.create_all(engine))   # 对连接引擎使用映射, 创建数据库
 
 
 ### Create an Instance of the Mapped Class ###
@@ -268,5 +268,158 @@ print(count_num)
 
 
 ### NOTE: Building a Relationship ###
-# TODO:
+# 创建一个和User相关联的邮件地址映射表, 这里将建立一个一对多的关系, User 1 -- Address 多
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
+class Address(Base):
+    __tablename__ = "addresses"
+    id = Column(Integer, primary_key=True)
+    email_address = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    
+    user = relationship("User", back_populates="addresses")
+
+    def __repr__(self):
+        return "<Address email_address: %s; user: %s>" % (self.email_address, self.user.name) 
+
+
+User.addresses = relationship("Address", order_by=Address.id, back_populates="user")
+
+# 上面的类介绍了ForeignKey构造，它是一个应用于Column的指令，表明此列中的值应该被constrained(限制), 其值代表了远端相同名字的列.
+# 这在关系型数据库中是一个核心功能, 并作为一种粘合剂将相反的没有连接的表集合相互交叠形成丰富的联系.
+# ForeignKey表明在addresses.user_id列中的值应该也包含在users.id列中. 即是一个主键.
+
+# orm.relationship()方法告诉ORM使用Address.user属性将Address类和User类相互连接.
+# 在Address中的relationship()使用外键关联了两个表, 决定连接的性质, 定义了Address.user是一个many to one的关系.
+# 另一个relationship()在User.address中.
+# 在两个relationship()指令中, 参数relationship.back_populates被分配附加的属性名给该列, 通过这个, 每一个relationship()可以做出与反向表达的相同关系的智能决策.
+# 在另一方面Address.user引用一个User的实例, 同时User.address页应用了一个Address实例的列表.
+# 也有个和relationship.back_populates相似的参数, 是relationship.backref, 前者对后者做了一些优化.
+
+# FOREIGN KEY 约束在大多数关系型数据库汇总只能连接到一个主键列或一个UNIQUE约束列
+# FOREIGN KEY 约束引用了多个主键列并且本身也有多列, 被叫做复合外键
+# FOREIGN KEY 列可以根据自己引用的列或行的变动而自动更新. 这被叫为CASCADE referential action(级联操作), 并且这是由关系型数据库的内建函数完成.
+# FOREIGN KEY 可以引用自己所在的表. 这叫做自关联
+
+# 创建addresses表, 将跳过存在的表而创建没有的
+Base.metadata.create_all(engine)
+
+
+### NOTE: Working with Related Objects ###
+jack = User(name="jack", fullname="Jack Bean", nickname="gjffdd")
+print(jack.addresses)   # 默认返回是一个Python list对象
+
+# 可以自由的将Address对象加入User对象
+jack.addresses = [
+    Address(email_address="jack@google.com"),
+    Address(email_address="j25@yahoo.com")
+]
+
+# 当使用双向关联, 元素自动添加并变得以其定义的顺序排列的可见.
+print(jack.addresses)
+session.add(jack)
+session.commit()
+
+# 当连接到addresses集合, SQL语句将会立刻发出. 这就是lazy loading关系的一个例子. 
+# addresses集合当前被载入并表现的像一个有序列表. 
+jack_search = session.query(User).filter_by(name="jack").one()
+print(jack_search, jack_search.addresses)
+
+#　REVIEW: https://docs.sqlalchemy.org/en/rel_1_2/glossary.html#term-lazy-loading
+
+# 多对多的关系
+# from sqlalchemy import Table
+
+# class Project(Base):
+#     __tablename__ = 'project'
+
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String(30))
+
+
+# class Employee(Base):
+#     __tablename__ = 'employee'
+
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String(30))
+
+#     projects = relationship(
+#         "Project",
+#         secondary=Table('employee_project', Base.metadata,
+#                     Column("employee_id", Integer, ForeignKey('employee.id'),
+#                                 primary_key=True),
+#                     Column("project_id", Integer, ForeignKey('project.id'),
+#                                 primary_key=True)
+#                 ),
+#         backref="employees"
+#     )
+
+
+# CREATE TABLE employee (
+#     id INTEGER PRIMARY KEY,
+#     name VARCHAR(30)
+# )
+
+# CREATE TABLE project (
+#     id INTEGER PRIMARY KEY,
+#     name VARCHAR(30)
+# )
+
+# CREATE TABLE employee_project (
+#     employee_id INTEGER PRIMARY KEY,
+#     project_id INTEGER PRIMARY KEY,
+#     FOREIGN KEY employee_id REFERENCES employee(id),
+#     FOREIGN KEY project_id REFERENCES project(id)
+# )
+
+
+### NOTE: Querying with Joins ###
+# 联合查询
+# 可以在query中指定连接显示的列, query就相当于selec后面到from中的那一串
+# 构建一个简单的隐式的join在User和Address之间, 可以使用Query.filter()连接两者的列.
+for u, a in session.query(User, Address).\
+                         filter(User.id==Address.user_id).\
+                         filter(Address.email_address.ilike("%jack%")).all():
+    print(u, a)
+
+
+# 使用Query.join() 显示的构建联合查询
+search_result = session.query(User).join(Address).\
+                                filter(Address.email_address.ilike("%jack%")).all()
+print(search_result)
+
+# Query.join()方法知道如何去join User和Address表, 因为只用一个外键连接User和Address. 
+# 如果没有外键(foreign key), 或者是多个外键, Query.join(), 可以使用如下, 直接在join中指定.
+query = session.query(User)
+query.join(Address, User.id==Address.user_id)   # 显示的指定
+query.join(User.addresses)                      # 从左到右指定关系
+query.join(Address, User.addresses)             # 显示的指定
+query.join("addresses")                         # 使用字符串显示的指定
+
+# 使用outer join, 使用Query.outerjoin()方法
+query.outerjoin(User.addresses)   # 左外部连接
+
+# 如果有多个实体, Query将如何选择?
+# Query.join()方法一般都会从在实例列表中最左边的项进行join, 当 ON语句被省略, 或 ON语句是一个纯SQL表达式.
+# 想要控制第一个join的实例, 使用Query.select_from()方法
+query = session.query(User, Address).select_from(Address).join(User)
+
+# Using Aliases # 
+# 使用别名
+# 在跨多个表进行查询时，如果需要多次引用同一个表，则SQL通常要求使用其他名称对该表进行别名，以便可以将该表与该表的其他实例区分开来。
+from sqlalchemy.orm import aliased
+adalias1 = aliased(Address)
+adalias2 = aliased(Address)
+for username, email1, email2 in \
+    session.query(User.name, adalias1.email_address, adalias2.email_address).\
+    join(adalias1, User.addresses).\
+    join(adalias2, User.addresses).\
+    filter(adalias1.email_address=="jack@google.com").\
+    filter(adalias2.email_address=="j25@yahoo.com"):
+    print(username, email1, email2)
+
+# query中指定了连接的列
+
+# Using Subqueries # 
+# 使用子查询
