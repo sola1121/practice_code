@@ -1,5 +1,10 @@
 # https://docs.sqlalchemy.org/en/rel_1_2/orm/tutorial.html
 
+# Engine 是连接数据库和映射类的连接纽带, 其指定使用的数据库引擎.
+# Declarative Base类是创建映射类的基类, 通过对其进行继承, 子类便成为了一个映射类.基类在全应用中, 最好只出现一个.
+# Session类是与数据库进行对话的会话类, 通过与Engine的绑定, 在其中完成对数据库的基本操作.
+
+
 ### NOTE: Connection ###
 from sqlalchemy import create_engine
 
@@ -149,7 +154,7 @@ for name, fullname in session.query(User.name, User.fullname):
 for row in session.query(User, User.name).all():
     print(row.User, row.name)
 
-# 可以使用由ColumnElement驱动的label()结构表达式对象控制单个列的名字, 就和其他有映射的类参数一样
+# 可以使用由ColumnElement驱动的label()结构表达式对象指定单个列的名字, 如同sql中的as, 就和其他有映射的类参数一样
 for row in session.query(User.name.label("name_label")).all():
     print(row.name_label)
 
@@ -423,3 +428,91 @@ for username, email1, email2 in \
 
 # Using Subqueries # 
 # 使用子查询
+# Query对象适用于生成可作为子查询的语句. 
+# SELECT user.*, adr_count.address_count FROM users
+# LEFT OUTER JOIN 
+#    (SELECT user_id, count(*) AS address_count FROM address 
+#        GROUP By user_id) AS adr_count
+# ON users.id = adr_count.user.id;
+# 使用Query, 从内到外创建一个语句. statement 访问返回一个代表由通常的Query产生的Select()构造实例的SQL表达式
+from sqlalchemy import func
+stmt = session.query(Address.user_id, func.count("*").\
+    label("address_count")).\
+    group_by(Address.user_id).subquery()
+# func关键字产生SQL方法, Query对象上subquery()方法生成一个SQL表达式构造, 表示嵌入在别名中的SELECT语句(实际上其是query().statement.alias()的缩写)
+# 当有了一个语句, 其行为和Table结构相似, 就像一个users表的实例对象.
+for u, count in session.query(User, stmt.c.address_count).\
+    outerjoin(stmt, User.id==stmt.c.user_id).order_by(User.id):
+    print(u, count)
+
+# Selecting Entities from Subqueries #
+# 子查询中的selecting实体
+# 在上面的例子中, 只是选择了一个从子查询中包含一列的结果. 如果想要子查询映射到一个实体呢?
+# 可以使用aliased()来关联一个从类映射到子查询的"alias".
+stmt = session.query(Address).filter(Address.email_address!="j25@yahoo.com").subquery()
+adalias = aliased(Address, alias=stmt)
+for user, address in session.query(User, adalias).\
+    join(adalias, User.addresses):
+    print(user, address, sep="\n")
+
+# Using EXISTS # 
+# 使用EXISTS语句
+# 在SQL中的EXISTS关键字是一个布尔操作符, 当给予的表达式包含行时, 将会返回True.
+# 其可能会被用在许多的场景中, 例如joins语句中, 查找列是否在关联的表中有值.
+from sqlalchemy.sql import exists
+stmt = exists().where(Address.user_id==User.id)
+for name, in session.query(User.name).filter(stmt):
+    print(name)
+
+# 一些在Query对象中的操作会自动的使用EXISTS. 例如 any(), has()
+for name, in session.query(User.name).\
+    filter(User.addresses.any()):
+    print(name)
+
+for name, in session.query(User.name).\
+    filter(User.addresses.any(Address.email_address.like("%google%"))):
+    print(name)
+
+isHas = session.query(Address).filter(~Address.user.has(User.name=="jack")).all()   # address中的user是否有不是用户jack的数据
+print(isHas)
+
+# Common Relationship Operators #
+query = session.query(Address)
+user_object = session.query(User).filter(User.name == "jack")
+address_object = session.query(Address).filter(Address.user.name == "jack").first()
+# __eq__()   多对一 相等比较
+query.filter(Address.user == user_object)
+# __ne__()   多对一 不相等比较
+query.filter(Address.user != user_object)
+# IS NULL   多对一比较, 同样使用 __eq__()
+query.filter(Address.user == None)
+# contains()   一对多集合
+query.filter(User.address.contains(address_object))
+# any()   用于集合
+query.filter(User.addresses.any(Address.email_address == "bar"))
+query.filter(User.addresses.any(email_address = "bar"))   # 使用关键字参数
+# has()   用于范围查询
+query.filter(Address.user.has(name="ed"))
+# Query.with_parent() 用于关联
+session.query(Address).with_parent(user_object, "addresses")
+
+
+
+### NOTE: Eager Loading ###
+# 在访问User.addresses集合并发出SQL时, 当时说明了一个延迟加载操作.
+# 如果想要减少查询的次数, 可以在查询操作中使用一个eager loading.
+# SQLAlchemy提供了三种不同类型的eager loading. 其中两个是自动的, 另一个涉及自定义标准.
+# 所有的这三个通常需要通过查询选项的方法, 其可以提供额外的内容到Query, 可定义各种属性的载入通过 Query.options()方法
+
+# Subquery Load # 
+# 在这个示例中, 想要表明User.addresses应该load eagerly.
+# 一个对于加载一个对象集合以及他们相关联的集合的好的选择是orm.subqueryload()选项, 其发出二次通过已被加载结果全加载集合的SELECT语句.
+# "subquery"的名字来自于SELECT语句直接通过Query 再使用, 作为一个子查询被嵌套进一个针对关联表SELECT中的构造
+from sqlalchemy.orm import subqueryload
+jack = session.query(User).options(subqueryload(User.addresses)).filter_by(name="jack").one()
+print(jack)
+# 当subqueryload 用于关联限制比如Query.first(), Query.limit()或Query.offset()为了保证正确的结果, 应该同样包含Query.order_by()在一个unique列中
+
+# Joined Load #
+
+#　TODO:
