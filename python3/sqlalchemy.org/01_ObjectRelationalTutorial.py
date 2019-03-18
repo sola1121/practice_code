@@ -514,5 +514,82 @@ print(jack)
 # 当subqueryload 用于关联限制比如Query.first(), Query.limit()或Query.offset()为了保证正确的结果, 应该同样包含Query.order_by()在一个unique列中
 
 # Joined Load #
+# 另一个会自动eager loading的方法是orm.joinedload(). 
+# 该方法的将会发出一个JOIN, 通常是LEFT OUTER JOIN, 所以载入的对象同时和关联的对象或者集合都在一个步骤中被载入.
+# 举个例子, 在此方法下载入相同addresses数据集的时候, 即使User.addresses数据集合在jack已经存在, 查询还是会发出额外的join.
+from sqlalchemy.orm import joinedload
+jack = session.query(User).\
+    options(joinedload(User.addresses)).\
+    filter_by(name="jack").one()
+print(jack)
+# 即使OUTER JOIN 得到的两行结果, 也只返回了一个User对象实例. 这是因为Query将使用"uniquing"策略在返回实体上, 该策略是基于对象身份认证的.
+# 这尤其是在joined eager loading 能在没有影响查询结果的时候被应用.
+# 当joinedload()已经存在了很长时间, subqueryload()是来自eager loading最新的.
+# 当joinedload()尝试在多对一关系上表现得更好时, subqueryload()尝试更多的链接来载入关联集合, 基于主导的和关联的两个对象只有一行被载入.
 
-#　TODO:
+# joinload()不能取代join()
+# join是由joinedload()创造, 这是一个匿名的别名, 以至于其没有影响查询的结果. 一个Query.order_by()或Query.filter()的调用不能引用这些别名表, 所以调用由Query.join()构成的"user space"(名称空间)joins.
+# 这个理由就是为什么joinedload()只能为了影响关联对象或数据集合之间作为一个优化细节被应用, 其在被加入或被移除时是对结果没有影响的.
+
+# Explicit Join + Eagerload # 
+# 显式联合+Eagerload
+# 第三种风格的eager loading 在为了定位主键行显式构建JOIN, 并将会额外使用外部表用以在主键对象上的一个被关联对象或数据集.
+# 这个特性通过orm.contains_eager()方法提供, 是对于在一个需要在同一个对象上过滤的查询预加载多对一对象最典型有用的.
+# 一下示例, 演示同时载入Address行和关联的User对象, 从User对象的name="jack"上过滤, 并使用orm.contains_eager()来对Address.user属性使用"user"列
+from sqlalchemy.orm import contains_eager
+jacks_addresses = session.query(Address).\
+    join(Address.user).\
+        filter(User.name=="jack").\
+            options(contains_eager(Address.user)).all()
+print(jacks_addresses)
+
+
+
+### NOTE: Deleting ###
+# 在session中用deleted标记对象, 然后发出一个count查询直到看见没有结果存在
+session.delete(jack)
+session.query(User).filter_by(name="jack").count()
+# 再来看看jack的Address对象们
+session.query(Address).filter(Address.email_address.in_(["jack@google.com", "j25@yahoo.com"])).count()
+# 从结果来看, 这些地址是依然存在的, 对应的user_id将会被设置为NULL. SQLAlchemy不会默认采取级联删除, 除非显示的告诉SQLAlchemy.
+
+# Configuring delete/delete-orphan Cascade # 
+# 配置删除/删除孤立级联
+# 配置cascade选项在User.addresses关联关系上.
+# SQLAlchemy允许动态的在映射关系上添加新的属性, 在这里需要现将存在的表间关系移除, 这样就可以完全的移除映射然后重启, 需要关闭Session
+session.close()
+Base = declarative_base()
+# 在定义User类, 向addresses关联关系加入包含cascade定义的属性.
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    fullname = Column(String)
+    nickname = Column(String)
+
+    addresses = relationship("Address", back_populates="user", cascade="all, delete, delete-orphan")
+
+    def __repr__(self):
+        return "<User(name=%s, fullname=%s, nickname=%s)>" % (self.name, self.fullname, self.nickname)
+
+
+# 重新创建Address. 通过已有的User类创建Address.user
+class Address(Base):
+    __tablename__ = "addresses"
+
+    id = Column(Integer, primary_key=True)
+    email_address = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User", back_populates="addresses")
+
+    def __repr__(self):
+        return "<Address(email_address=%s)>" % self.email_address
+
+# 这样当删除User中的记录的时候, 对应的Address中的用户记录也会一同删除
+# 使用all, delete-orphan, 不会删除对应的相关数据, 但是在查询中将会不可见.
+
+
+### NOTE: Bulding a Many To Many Relationship ###
+
+
