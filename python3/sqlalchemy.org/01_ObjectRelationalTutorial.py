@@ -591,5 +591,84 @@ class Address(Base):
 
 
 ### NOTE: Bulding a Many To Many Relationship ###
+# 接下来将会来创建一个博客应用, users可以书写多个BlogPost(多对一), 并且这些BlogPost有多个Keyword项和他相连(多对多).
+# 对于一个简单的多对多关系, 需要创建一个非映射Table构成用以连接表.
+from sqlalchemy import Table, Text
+# 连接表
+post_keywords = Table('post_keywords', Base.metadata,
+    Column("post_id", ForeignKey("postd.id"), primary_key=True),
+    Column("keyword_id", ForeignKey("keywords.id"), primary_key=True)
+)
+# 通过以上直接声明一个Table, 可以看出这和声明一个映射类有所不同. 
+# Table是一个构造函数, 所以每一个独立的列Column参数数都被逗号分割. 
+# Column对象也被显式的命名, 而不是用指定的属性的名称.
 
+# 接下来使用relationship()构造组件定义BlogPost和Keyword, 每一个引用到post_keywords表中的都是一个关联表
+class BlogPost(Base):
+    __tablename__ = "posts"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    headline = Column(String(255), nullable=False)
+    body = Column(Text)
+
+    # 多对多 Blog <-> Keyword
+    keywords = relationship("Keyword",
+                            secondary=post_keywords,   # relationship中使用secondary
+                            back_populates="posts")
+
+    def __init__(self, headline, body, author):
+        self.author = author
+        self.headline = headline
+        self.body = body
+
+    def __repr__(self):
+        return "BlogPost(%r, %r, %r)" % (self.headline, self.body, self.author)
+
+
+class Keyword(Base):
+    __tablename__ = "keywords"
+
+    id = Column(Integer, primary_key=True)
+    keyword = Column(String(50), nullable=False, unique=True)
+    posts = relationship("BlogPost",
+                         secondary=post_keywords,   # relationship中使用secondary
+                         back_populates="keywords")
+    
+    def __init__(self, keyword):
+        self.keyword = keyword
+# 以上两个类的声明都显式的使用了__init__方法. 记住, 当使用Declarative的时候, 这是可选的.
+
+# 多对多关系是BlogPost.keywords. 一个多对多关系定义的特征是使用secondary关键字参数, 其可以应用一个代表连接表的Table对象.
+# 这个表只单单包含两边关系表的各引用列; 如果其有任何其他的列, 比如其自身的主键或者其他表的外键, SQLAlchemy需要一个不同的使用模式叫做"association object".
+# 同样需要BlogPOST类有一个author字段.
+# 将添加这个字段作为另一个双向连接关系, 这样一个用户就可以有多个博客帖.
+# 当我们连接到User.posts时, 我们将会能够进一步的过滤结果, 这样就不用载入完整的实例.
+# 对于这个目的, 我们使用一个relationship()的设置叫做lazy="dynamic", 通过这个参数配置一个可选的载入策略
+BlogPost.author = relationship(User, back_populates="posts")
+User.posts = relationship(BlogPost, back_populates="author", lazy="dynamic")
+
+Base.metadata.create_all(engine)
+
+# 向其中添加数据
+wendy = session.query(User).filter_by(name="wendy").one()
+post = BlogPost("Wendy's Blog", "This is the body", wendy)
+session.add(post)
+
+# 向标签表中创建数据
+post.keywords.append(Keyword("wendy"))
+post.keywords.append(Keyword("firstpost"))
+
+# 产看是否有博客具有firstpost标签
+search_result = session.query(BlogPost).\
+    filter(BlogPost.keywords.any(Keyword="firstpost")).all()
+print(search_result)
+
+# 查看wnedy的有firstpost标签博客
+search_result = session.query(BlogPost).\
+    filter(BlogPost.author==wendy).\
+    filter(BlogPost.keywords.any(Keyword="firstpost")).all()
+print(search_result)
+
+search_result = wendy.posts.filter(BlogPost.keywords.any(keyword="firstpost")).all()
 
