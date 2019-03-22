@@ -5,31 +5,33 @@
 # Session类是与数据库进行对话的会话类, 通过与Engine的绑定, 在其中完成对数据库的基本操作.
 
 
-### NOTE: Connection ###
+### NOTE: Connection ### 连接
+# 使用连接, 我们使用create_engine()
 from sqlalchemy import create_engine
 
-# echo 参数, 使用了内建的logging库, 当为True的时候, 将会在终端打印详生成的SQL语句, 为False将不会打印
-# create_engine() 是一个快捷方式, 返回一个Engine对象, 代表了与不同数据库链接的接口集合.
-# Engine和数据库建立了一个lazy connection,  当使用Engine.execute()或Engine.connect()时, Engine对象与数据库将建立一个真的DBAPI链接, 这样可以之后使用SQL语句.
+# echo 参数, 使用了内建的logging库, 当为True的时候, 将会在终端打印生成的SQL语句, 为False将不会打印.
+# create_engine() 是一个生成Engine实例的快捷方式, Engine实例代表了与不同数据库链接的接口集合.
+# Engine实例被创建时并没有完成和数据库的真正的连接, 当使用如Engine.execute()或Engine.connect()时, Engine实例与数据库通过发送SQL发生连接.
+# 通常我们不直接使用使用Engine实例, 而是通过ORM在间接的操作.
 engine = create_engine('sqlite:///:memory:', echo=True)
+# 更多的数据库 https://docs.sqlalchemy.org/en/rel_1_2/core/engines.html#database-urls
 
 
-### NOTE: Declare a Mapping ###
-# 当使用ORM的时候, 配置的过程开始于描述一个数据库, 然后自定义一些类与其建立映射.
-# 在现代的SQLAlchemy中, 这两个进程通常是一起执行的, 使用一个可以创建包含指令去描述一个真实的数据库表并与其映射的类, 该系统叫做Declarative
-# 被映射的类使用的Declarative系统根据一个维持一个类目录和关联表的基类被定义. 被称为declarative Base class
-# 我们的应用通常只有一个declarative基础的实例在一个公用导入模板中. 使用declaretive_base()来创建它.
+### NOTE: Declare a Mapping ### 声明一个映射
+# 当使用ORM的时候, 配置的过程开始于声明一个我们将要处理的数据库, 然后定义我们自己的用于映射到表的类.
+# 在现代的SQLAlchemy中, 使用一个叫为Declarative的系统, 这两个过程通常是一起执行的, 这个系统可以支持我们创建出包含描述被映射的实际数据库表的指令.
+# 使用Declarative系统被映射的类是用基类定义的(就是继承一个基类), 这个基类会维护多个关联的类和表. 这个基类解释declarative base class.
+# 我们的应用通常应该只有一个declarative base class, 通过导入来使用. 使用declaretive_base()来创建它.
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+Base = declarative_base()   # 这样就有了一个base类, 我们可以通过他定义任何数量的映射类.
 
-# 使用declarative Base class 来创建一个User表
-
+# 接下来我们定义一个User映射. 在这个映射中也是定义了数据库中详细的表结构.
 from sqlalchemy import Column, Integer, String, Sequence
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, Sequence("user_id_seq"), primary_key=True)   # 在Firebird和Oracle中需要加入序列
+    id = Column(Integer, Sequence("user_id_seq"), primary_key=True)   # 在Firebird和Oracle中需要加入序列, 这里使用的sqlite, 加不加没影响.
     name = Column(String(64))
     fullname = Column(String(128))
     nickname = Column(String(64))
@@ -39,54 +41,58 @@ class User(Base):
                 % (self.id, self.name, self.fullname, self.nickname)
 
 # 一个使用Declarative的子类至少要有__tablename__和一个Column()是主键.
-# SQLAlchemy从不对类引用的表做任何假设, 包括它没有名称，数据类型或约束的内置事务.
-# 但这并不意味着需要样板; 相反, 我们鼓励您使用辅助函数和mixin类创建自己的自动事务.
-# 当类的结构确定后, Declarative将会使用一个被叫做descriptors的Python存取替换所有的Column对象, 这个进程叫做 instrumentation.
+# 创建一个没有主键的表 https://docs.sqlalchemy.org/en/rel_1_2/faq/ormconfiguration.html#faq-mapper-primary-key
+# SQLAlchemy从不对类引用的表做任何假设, 包阔默认的表名称, 数据类型或约束条件.
+# 但这并不意味着需要样板; 相反, 我们鼓励用户使用辅助函数和mixin类创建自己的自动化任务.
+# Mixin and Custom Base Classes. https://docs.sqlalchemy.org/en/rel_1_2/orm/extensions/declarative/mixins.html#declarative-mixins
+# 当我们的映射类被创建后, Declarative将会使用一个被叫做descriptors的Python访问替换所有的Column对象, 这个进程叫做 instrumentation.
+# 被"instrumented"的映射类将会提供我们在SQL上下文中引用我们的表以及执行和载入数据库中各列的值的方法.
 
 
-### NOTE: Create a Schema ###
-# 通过Declarative System使用相应命令来构建的User类, 其中的这些描述被叫做 table metadata. 
-# 被SQLAlchemy用来代表一个指定的表的信息称为Table对象. 可以从相应表对象的__table__属性中看到定义.
+### NOTE: Create a Schema ### 创建一个库
+# 通过Declarative系统构建了我们的一个User类, 在此我们已经定义了我们的表的信息, 这叫做表的metadata(元数据).
+# 被SQLAlchemy用来代表指定的表的元数据的信息的对象被称为Table对象. 可以从映射类的__table__属性中看到定义(这就是SQL执行语句).
 print(User.__table__)
 
-# 当我们声明了一个类, 当这个类定义完成, Declarative 将使用Python元类来补充额外的活动.
-# 在这个阶段, 将会更具我们的指定创建一个Table对象, 并通过构建一个Mapper对象与其连接.
+# 当我们声明了一个我们的类, 为了能在类声明完成时执行额外的动作, Declarative使用一个Python元类(metaclass); 在这阶段, 其之后会根据我们的指令创建一个Table对象并通过构建一个Mapper对象与之连接.
 # Mapper对象是一个幕后对象, 通常我们都不用显式的处理他. 其中提供了大量的关于我们映射的信息.
-# Table对象是大集合MetaData的一个成员. 当使用Declarative的时候, 这个对象是可以通过declarative base类中.meatadata属性获得的.
-# MetaData是一个包含了能够向数据库发出一组有限的schema generation命令的注册处.
-# 当我们的SQLite数据库没有存在users表的时候, 可以使用MetadData来向数据库发出CREATE TABLE命令来创建没有存在的数据库表.
-# 可以执行MetaData.create_all()方法, 传入我们Engine作为数据库链接的来源. 首先将会检查users表的存在, 并在之后产生实际的CREATE TABLE指令.
+# Table对象是大集合MetaData的一个成员. 当使用Declarative的时候, 这个对象是可以通过declarative base class中.meatadata属性获得的.
+# MetaData是一个包含能够对数据库发出一个有限制的库创建命令集合的注册处.
+# 当我们的SQLite数据库没有存在users表的时候, 可以使用MetadData来向数据库发出CREATE TABLE命令来创建没有存在的数据库.
+# 可以执行MetaData.create_all()方法, 传入我们Engine作为数据库链接的来源. 
+# 在这之后首先我们会看到一些特殊的命令被发出, 其将会检查users表的存在, 并在之后产生实际的CREATE TABLE指令.
 print(Base.metadata.create_all(engine))   # 对连接引擎使用映射, 创建数据库
 
 
-### Create an Instance of the Mapped Class ###
+### NOTE:　Create an Instance of the Mapped Class ### 创建一个映射类实例
 ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname')
-print(ed_user)   # 在这里可以看到id为None
+print(ed_user)   # 在这里可以看到id为None, 因为这里还没有发给数据库, 那么instrument通常会给个None, 之后在发送给数据库时生成.
 
 # 我们使用Declarative系统定义的User类已经提供了一个构造函数（例如__init __（）方法），它自动接受与我们映射的列匹配的关键字名称。
 # 我们可以自由地在我们的类上定义任何我们喜欢的显式__init __（）方法，它将覆盖Declarative提供的默认方法。
 
-# 不同于Python对错误属性的处理, 他没有raise AttributeError. 
+# 在这里创建的对象, 可以看到没有主键, 这不同于Python对错误属性的处理, 他没有raise AttributeError. 
 # SQLAlchemy的instrumentation通常在第一次连接时提供默认的值给列映射属性. 
-# 对于那些我们事实上分配了值的属性, instrumentation system将追踪那些分配, 用来在最终向数据库发送INSERT语句.
+# 对于那些我们事实上分配了值的属性, instrumentation系统将追踪那些分配, 用来在最终向数据库发送INSERT语句.
 
 
-### Creating Session ###
+### NOTE: Creating a Session ### 创建会话
 # session三状态 transient, pending, persistent. 临时的, 待定的, 永久的.
-# 处理ORM与数据库之间交流的是Session. 在第一次创建应用时, 在统一层面上create_engin发生时,就定义了一个Session类, 其将会作为一个工厂函数服务于新的session对象.
+# 我们已经准备好了和数据库进行交互. 处理ORM与数据库之间交流的是Session. 
+# 在第一次创建应用时, 在同一层面上create_engine()语句发生时, 我们定义一个Session类, 其将会作为一个工厂函数服务于新的session对象.
 
 from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind=engine)
 
-# 当还没有定义Engin对象的时候, 可以先创建一个会话对象, 然后在定义了Engine对象后在配置
+# 当还没有定义Engin对象的时候, 可以先创建一个会话对象, 然后在定义了Engine对象后在使用Session.configure()配置.
 Session = sessionmaker()
 Session.configure(bind=engine)
-
+# 定制Session类将会创建一个新的session对象, 他是绑定到我们的数据库的.
 # 当有和后端数据库进行相应的交流的时候, 可以实例化配置好的Session对象
-session = Session()
+session = Session()  # 使用配置好的Session对象创建会话实例.
 # 当实例化的session对象第一次使用后, 其将会连接到一个由Engine对象维护的内存池中, 直到commit或者close会话.
 
-
+TODO: 
 ### NOTE: Adding and Updating Objects ###
 # 将ed_user对象加入session
 ed_user = User(name="ed", fullname="Ed Jones", nickname="edsnickname")
