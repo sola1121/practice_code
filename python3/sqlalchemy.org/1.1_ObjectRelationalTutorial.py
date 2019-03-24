@@ -288,9 +288,10 @@ print(count_num)
 count_num = session.query(func.count(User.id)).scalar()
 print(count_num)
 
-# TODO: 
-### NOTE: Building a Relationship ###
-# 创建一个和User相关联的邮件地址映射表, 这里将建立一个一对多的关系, User 1 -- Address 多
+
+### NOTE: Building a Relationship ### 创建一个关联关系
+# 创建一个和User相关联的邮件地址映射表, 我们系统中的Users通过关联的用户名能存储任何数量的邮件地址.
+# 这里将建立一个一对多的关系, User 1 -- Address 多
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -308,18 +309,25 @@ class Address(Base):
 
 User.addresses = relationship("Address", order_by=Address.id, back_populates="user")
 
-# 上面的类介绍了ForeignKey构造，它是一个应用于Column的指令，表明此列中的值应该被constrained(限制), 其值代表了远端相同名字的列.
+# 上面的类介绍了ForeignKey构造函数, 它是一个应用于Column的指令, 表明此列中的值应该被constrained(限制), 其值代表了远端相同名字的列.
 # 这在关系型数据库中是一个核心功能, 并作为一种粘合剂将相反的没有连接的表集合相互交叠形成丰富的联系.
-# ForeignKey表明在addresses.user_id列中的值应该也包含在users.id列中. 即是一个主键.
+# ForeignKey表明在addresses.user_id列中的值应该也包含在users.id列中. 即作为user.id的外键.
 
 # orm.relationship()方法告诉ORM使用Address.user属性将Address类和User类相互连接.
 # 在Address中的relationship()使用外键关联了两个表, 决定连接的性质, 定义了Address.user是一个many to one的关系.
-# 另一个relationship()在User.address中.
+# 另一个relationship()在User.addresses中, 可以看到在定义完address后, 紧接着动态的向User中添加了一个新的relationship关联列.
 # 在两个relationship()指令中, 参数relationship.back_populates被分配附加的属性名给该列, 通过这个, 每一个relationship()可以做出与反向表达的相同关系的智能决策.
-# 在另一方面Address.user引用一个User的实例, 同时User.address页应用了一个Address实例的列表.
-# 也有个和relationship.back_populates相似的参数, 是relationship.backref, 前者对后者做了一些优化.
+# 在另一方面Address.user引用一个User的实例, 同时User.address也引用了一个Address实例的列表.
 
-# FOREIGN KEY 约束在大多数关系型数据库汇总只能连接到一个主键列或一个UNIQUE约束列
+# 也有个和relationship.back_populates相似的参数, 是relationship.backref, 前者对后者做了一些优化, 这两者将会共存.
+
+# 站在多对一关系相反面的是一对多关系. 
+# 这两种互补关系Address.user和User.addresses被引用为双向关系, 这也是SQLAlchemy ORM的关键特征.
+# 若Declarative系统在使用时, relationship()的有关远端的类的参数能使用字符串指定.
+# 一旦当所有映射完成, 这些字符串的参数将被作为Python表达式, 为了产生实际的参数, 在上面的例子中是User类.
+# 在此评估期间允许使用的名称包括根据声明的base创建的所有类的名称.
+
+# FOREIGN KEY 约束在大多数关系型数据库中只能连接到一个主键列或一个UNIQUE约束列
 # FOREIGN KEY 约束引用了多个主键列并且本身也有多列, 被叫做复合外键
 # FOREIGN KEY 列可以根据自己引用的列或行的变动而自动更新. 这被叫为CASCADE referential action(级联操作), 并且这是由关系型数据库的内建函数完成.
 # FOREIGN KEY 可以引用自己所在的表. 这叫做自关联
@@ -328,7 +336,7 @@ User.addresses = relationship("Address", order_by=Address.id, back_populates="us
 Base.metadata.create_all(engine)
 
 
-### NOTE: Working with Related Objects ###
+### NOTE: Working with Related Objects ### 使用关联表
 jack = User(name="jack", fullname="Jack Bean", nickname="gjffdd")
 print(jack.addresses)   # 默认返回是一个Python list对象
 
@@ -338,21 +346,25 @@ jack.addresses = [
     Address(email_address="j25@yahoo.com")
 ]
 
-# 当使用双向关联, 元素自动添加并变得以其定义的顺序排列的可见.
+# 当使用双向关联, 元素自动添加并在其定义的其他地方可见.
+# 这个行为基于属性on-change事件并由Python完成, 没有使用任何SQL.
+print(jack.addresses[1])
 print(jack.addresses)
+
+# 让我们使用使用commit添加Jack Bean到数据库. jack和他的两个Address成员同时被添加到了会话中, 使用了一个叫做cascading的进程.
 session.add(jack)
 session.commit()
 
+# 如果此时使用查询来查找jack, 将会得到jack对象, 不会有sql发出到jack的addresses.
 # 当连接到addresses集合, SQL语句将会立刻发出. 这就是lazy loading关系的一个例子. 
 # addresses集合当前被载入并表现的像一个有序列表. 
 jack_search = session.query(User).filter_by(name="jack").one()
 print(jack_search, jack_search.addresses)
 
 
-### NOTE: Querying with Joins ###
-# 联合查询
-# 可以在query中指定连接显示的列, query就相当于selec后面到from中的那一串
+### NOTE: Querying with Joins ### 联合查询
 # 构建一个简单的隐式的join在User和Address之间, 可以使用Query.filter()连接两者的列.
+# 这个就像nature join
 for u, a in session.query(User, Address).\
                          filter(User.id==Address.user_id).\
                          filter(Address.email_address.ilike("%jack%")).all():
@@ -361,28 +373,30 @@ for u, a in session.query(User, Address).\
 
 # 使用Query.join() 显示的构建联合查询
 search_result = session.query(User).join(Address).\
-                                filter(Address.email_address.ilike("%jack%")).all()
+                        filter(Address.email_address.ilike("%jack%")).all()
 print(search_result)
 
-# Query.join()方法知道如何去join User和Address表, 因为只用一个外键连接User和Address. 
-# 如果没有外键(foreign key), 或者是多个外键, Query.join(), 可以使用如下, 直接在join中指定.
+# Query.join()方法知道如何去join User和Address表, 因为User和Address之间是用一个外键进行关联的. 
+# 如果没有外键, 或者是多个外键, Query.join(), 直接在join中指定关系连接将会更好.
 query = session.query(User)
-query.join(Address, User.id==Address.user_id)   # 显示的指定
-query.join(User.addresses)                      # 从左到右指定关系
-query.join(Address, User.addresses)             # 显示的指定
-query.join("addresses")                         # 使用字符串显示的指定
+
+query.join(Address, User.id==Address.user_id)   # 显示的指定关联关系
+query.join(User.addresses)                      # 从左到右指定关系, 左连接?
+query.join(Address, User.addresses)             # 显示的指定关联关系
+query.join("addresses")                         # 显示指定关联关系就, 使用字符串
 
 # 使用outer join, 使用Query.outerjoin()方法
-query.outerjoin(User.addresses)   # 左外部连接
+query.outerjoin(User.addresses)   # 左外部连接 left outer join
 
 # 如果有多个实体, Query将如何选择?
 # Query.join()方法一般都会从在实例列表中最左边的项进行join, 当 ON语句被省略, 或 ON语句是一个纯SQL表达式.
-# 想要控制第一个join的实例, 使用Query.select_from()方法
+# 想要控制第一个join的实例, 使用Query.select_from()方法, 即控制谁作为左连接.
 query = session.query(User, Address).select_from(Address).join(User)
 
 # Using Aliases # 
 # 使用别名
 # 在跨多个表进行查询时，如果需要多次引用同一个表，则SQL通常要求使用其他名称对该表进行别名，以便可以将该表与该表的其他实例区分开来。
+# Query支持显式的使用aliased构造.
 from sqlalchemy.orm import aliased
 adalias1 = aliased(Address)
 adalias2 = aliased(Address)
@@ -392,64 +406,128 @@ for username, email1, email2 in \
     join(adalias2, User.addresses).\
     filter(adalias1.email_address=="jack@google.com").\
     filter(adalias2.email_address=="j25@yahoo.com"):
+
     print(username, email1, email2)
 
-# query中指定了连接的列
+""" 
+SELECT users.name AS users_name, 
+       addresses_1.email_address AS addresses_1_email_address, 
+       addresses_2.email_address AS addresses_2_email_address
+FROM users 
+
+JOIN addresses AS addresses_1 ON users.id = addresses_1.user_id
+JOIN addresses AS addresses_2 ON users.id = addresses_2.user_id
+
+WHERE addresses_1.email_address = ?
+AND addresses_2.email_address = ?; 
+"""
 
 # Using Subqueries # 
 # 使用子查询
 # Query对象适用于生成可作为子查询的语句. 
-# SELECT user.*, adr_count.address_count FROM users
-# LEFT OUTER JOIN 
-#    (SELECT user_id, count(*) AS address_count FROM address 
-#        GROUP By user_id) AS adr_count
-# ON users.id = adr_count.user.id;
-# 使用Query, 从内到外创建一个语句. statement 访问返回一个代表由通常的Query产生的Select()构造实例的SQL表达式
+# 支持我们想要的载入User对象统计属于一个每个用户有多少Adress记录计数.
+"""
+SELECT user.*, adr_count.address_count FROM users
+
+LEFT OUTER JOIN 
+   (SELECT user_id, count(*) AS address_count FROM address GROUP By user_id) AS adr_count
+ON users.id = adr_count.user_id;
+"""
+# 使用Query, 从内到外创建一个语句. 
+# statement 访问器返回有一个由通常的Query产生的SQL表达式的语句, 这是一个select()构造.
 from sqlalchemy import func
-stmt = session.query(Address.user_id, func.count("*").\
-    label("address_count")).\
-    group_by(Address.user_id).subquery()
-# func关键字产生SQL方法, Query对象上subquery()方法生成一个SQL表达式构造, 表示嵌入在别名中的SELECT语句(实际上其是query().statement.alias()的缩写)
-# 当有了一个语句, 其行为和Table结构相似, 就像一个users表的实例对象.
+
+stmt = session.query(Address.user_id, func.count("*").label("address_count")).\
+               group_by(Address.user_id).\
+               subquery()
+
+# func关键字产生SQL方法, Query对象上subquery()方法生成一个SQL表达式构造, 该构造表示嵌入在别名中的SELECT语句(实际上其是query().statement.alias()的缩写)
+# 当拥有了我们的语句, 其行为和Table构造相似, 就像一个users表的实例对象.
+# 在语句中的列可以通过语句中的c属性进行调取.
 for u, count in session.query(User, stmt.c.address_count).\
-    outerjoin(stmt, User.id==stmt.c.user_id).order_by(User.id):
+                        outerjoin(stmt, User.id==stmt.c.user_id).\
+                        order_by(User.id):
     print(u, count)
+"""
+SELECT users.id AS users_id,
+        users.name AS users_name,
+        users.fullname AS users_fullname,
+        users.nickname AS users_nickname,
+        anon_1.address_count AS anon_1_address_count
+FROM users 
+
+LEFT OUTER JOIN
+    (SELECT addresses.user_id AS user_id, count(?) AS address_count
+            FROM addresses GROUP BY addresses.user_id) AS anon_1
+    ON users.id = anon_1.user_id
+ORDER BY users.id;
+"""
 
 # Selecting Entities from Subqueries #
 # 子查询中的selecting实体
 # 在上面的例子中, 只是选择了一个从子查询中包含一列的结果. 如果想要子查询映射到一个实体呢?
-# 可以使用aliased()来关联一个从类映射到子查询的"alias".
+# 对于此, 我们使用aliased()来连接一个"alias"作为一个映射类到一个子查询.
 stmt = session.query(Address).filter(Address.email_address!="j25@yahoo.com").subquery()
 adalias = aliased(Address, alias=stmt)
 for user, address in session.query(User, adalias).\
-    join(adalias, User.addresses):
+                             join(adalias, User.addresses):
     print(user, address, sep="\n")
+
+"""
+SELECT users.id AS users_id,
+        users.name AS users_name,
+        users.fullname AS users_fullname,
+        users.nickname AS users_nickname,
+        anon_1.id AS anon_1_id,
+        anon_1.email_address AS anon_1_email_address,
+        anon_1.user_id AS anon_1_user_id
+FROM users 
+
+JOIN
+    (SELECT addresses.id AS id,
+            addresses.email_address AS email_address,
+            addresses.user_id AS user_id
+    FROM addresses
+    WHERE addresses.email_address != ?) AS anon_1
+    ON users.id = anon_1.user_id
+"""
 
 # Using EXISTS # 
 # 使用EXISTS语句
 # 在SQL中的EXISTS关键字是一个布尔操作符, 当给予的表达式包含行时, 将会返回True.
 # 其可能会被用在许多的场景中, 例如joins语句中, 查找列是否在关联的表中有值.
-from sqlalchemy.sql import exists
+from sqlalchemy.sql import exists   # 显式的exists构造
+
 stmt = exists().where(Address.user_id==User.id)
 for name, in session.query(User.name).filter(stmt):
     print(name)
 
+"""
+SELECT users.name AS users_name FROM users
+WHERE EXISTS (SELECT * FROM addresses WHERE addresses.user_id = users.id);
+"""
+
 # 一些在Query对象中的操作会自动的使用EXISTS. 例如 any(), has()
+# 上个例子就可以使用如下的表达方式.
 for name, in session.query(User.name).\
-    filter(User.addresses.any()):
+                     filter(User.addresses.any()):
     print(name)
 
+# any()中也可使用查询条件来限制匹配的行
 for name, in session.query(User.name).\
-    filter(User.addresses.any(Address.email_address.like("%google%"))):
+                     filter(User.addresses.any(Address.email_address.like("%google%"))):
     print(name)
 
+# has()对多对一关系是一个和any()很相似的操作符(其也适用 ~ , 取反) 
 isHas = session.query(Address).filter(~Address.user.has(User.name=="jack")).all()   # address中的user是否有不是用户jack的数据
-print(isHas)
+print(isHas)   # []
 
 # Common Relationship Operators #
+# 这些都是建立在关联关系之上的操作符.
 query = session.query(Address)
 user_object = session.query(User).filter(User.name == "jack")
 address_object = session.query(Address).filter(Address.user.name == "jack").first()
+
 # __eq__()   多对一 相等比较
 query.filter(Address.user == user_object)
 # __ne__()   多对一 不相等比较
@@ -466,9 +544,8 @@ query.filter(Address.user.has(name="ed"))
 # Query.with_parent() 用于关联
 session.query(Address).with_parent(user_object, "addresses")
 
-
-
-### NOTE: Eager Loading ###
+#　TODO:
+### NOTE: Eager Loading ### 贪婪加载
 # 在访问User.addresses集合并发出SQL时, 当时说明了一个延迟加载操作.
 # 如果想要减少查询的次数, 可以在查询操作中使用一个eager loading.
 # SQLAlchemy提供了三种不同类型的eager loading. 其中两个是自动的, 另一个涉及自定义标准.
