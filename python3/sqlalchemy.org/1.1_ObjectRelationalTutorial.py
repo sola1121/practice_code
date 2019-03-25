@@ -544,69 +544,79 @@ query.filter(Address.user.has(name="ed"))
 # Query.with_parent() 用于关联
 session.query(Address).with_parent(user_object, "addresses")
 
-#　TODO:
+
 ### NOTE: Eager Loading ### 贪婪加载
 # 在访问User.addresses集合并发出SQL时, 当时说明了一个延迟加载操作.
-# 如果想要减少查询的次数, 可以在查询操作中使用一个eager loading.
-# SQLAlchemy提供了三种不同类型的eager loading. 其中两个是自动的, 另一个涉及自定义标准.
-# 所有的这三个通常需要通过查询选项的方法, 其可以提供额外的内容到Query, 可定义各种属性的载入通过 Query.options()方法
+# 如果想要减少查询的次数, 可以在查询操作中使用一个eager loading(贪婪加载).
+# SQLAlchemy提供了三种不同类型的贪婪加载模式. 其中两个是自动的, 另一个涉及自定义一些行为.
+# 所有的这三个模式通常通过查询选项的方法进行启用, 贪婪加载会添加额外的指示到Query, 让我们载入我们所希望的不同的属性, 通过Query.options()方法.
 
-# Subquery Load # 
-# 在这个示例中, 想要表明User.addresses应该load eagerly.
-# 一个对于加载一个对象集合以及他们相关联的集合的好的选择是orm.subqueryload()选项, 其发出二次通过已被加载结果全加载集合的SELECT语句.
-# "subquery"的名字来自于SELECT语句直接通过Query 再使用, 作为一个子查询被嵌套进一个针对关联表SELECT中的构造
+# Subquery Load #
+# 子查询载入
+# 在这个示例中, 想要表明User.addresses应该被贪婪加载.
+# 一个对于加载一个对象集合以及他们相关联的集合的好的选择是orm.subqueryload()选项, 其会再次发出SELECT语句用以在已经加载的结果中寻找结果.
+# "subquery"的名字来自于SELECT语句构造实际是直接通过Query的再使用, 作为一个子查询被再一次嵌套进一个针对关联表SELECT中.
 from sqlalchemy.orm import subqueryload
-jack = session.query(User).options(subqueryload(User.addresses)).filter_by(name="jack").one()
-print(jack)
+
+jack = session.query(User).\
+               options(subqueryload(User.addresses)).\
+               filter_by(name="jack").one()
+print(jack, "\n", jack.addresses)
 # 当subqueryload 用于关联限制比如Query.first(), Query.limit()或Query.offset()为了保证正确的结果, 应该同样包含Query.order_by()在一个unique列中
 
 # Joined Load #
-# 另一个会自动eager loading的方法是orm.joinedload(). 
+# 关联载入
+# 另一个更常用的会自动贪婪加载的方法是orm.joinedload(). 
 # 该方法的将会发出一个JOIN, 通常是LEFT OUTER JOIN, 所以载入的对象同时和关联的对象或者集合都在一个步骤中被载入.
-# 举个例子, 在此方法下载入相同addresses数据集的时候, 即使User.addresses数据集合在jack已经存在, 查询还是会发出额外的join.
+# 我们用此方法演示相同的载入addresses集合.
+# 即使插槽的User.addresses集合在刚刚已被填充, 查询都将发出额外的join
 from sqlalchemy.orm import joinedload
-jack = session.query(User).\
-    options(joinedload(User.addresses)).\
-    filter_by(name="jack").one()
-print(jack)
-# 即使OUTER JOIN 得到的两行结果, 也只返回了一个User对象实例. 这是因为Query将使用"uniquing"策略在返回实体上, 该策略是基于对象身份认证的.
-# 这尤其是在joined eager loading 能在没有影响查询结果的时候被应用.
-# 当joinedload()已经存在了很长时间, subqueryload()是来自eager loading最新的.
-# 当joinedload()尝试在多对一关系上表现得更好时, subqueryload()尝试更多的链接来载入关联集合, 基于主导的和关联的两个对象只有一行被载入.
 
-# joinload()不能取代join()
+jack = session.query(User).\
+               options(joinedload(User.addresses)).\
+               filter_by(name="jack").one()
+print(jack, "\n", jack.addresses)
+# 注意, 即使OUTER JOIN 得到的两行结果, 也只返回了一个User对象实例. 这是因为Query将使用"uniquing"策略在返回实体上, 该策略是基于对象身份认证的.
+# 这尤其是在关联的贪懒加载时能在没有影响查询结果时被应用.
+# joinedload()已经存在了很长时间, subqueryload()是从贪懒加载中新加的.
+# 当joinedload()尝试在多对一关系上表现得更好时, subqueryload()尝试更多的链接来载入关联集合, 因为事实上只有一行引导和关联对象被载入.
+
+# joinedload()不能取代join()
 # join是由joinedload()创造, 这是一个匿名的别名, 以至于其没有影响查询的结果. 一个Query.order_by()或Query.filter()的调用不能引用这些别名表, 所以调用由Query.join()构成的"user space"(名称空间)joins.
 # 这个理由就是为什么joinedload()只能为了影响关联对象或数据集合之间作为一个优化细节被应用, 其在被加入或被移除时是对结果没有影响的.
 
 # Explicit Join + Eagerload # 
-# 显式联合+Eagerload
-# 第三种风格的eager loading 在为了定位主键行显式构建JOIN, 并将会额外使用外部表用以在主键对象上的一个被关联对象或数据集.
-# 这个特性通过orm.contains_eager()方法提供, 是对于在一个需要在同一个对象上过滤的查询预加载多对一对象最典型有用的.
-# 一下示例, 演示同时载入Address行和关联的User对象, 从User对象的name="jack"上过滤, 并使用orm.contains_eager()来对Address.user属性使用"user"列
+# 显式联合+贪婪载入
+# 第三种风格的贪懒加载在为了定位主键行显式构建JOIN, 并将会额外使用外部表用以在主键对象上的一个被关联对象或数据集.
+# 这个特性通过orm.contains_eager()方法提供, 是对于在一个需要在同一个对象上过滤预加载多对一对象时最典型有用的.
+# 以下示例, 我们演示同时载入Address行和关联的User对象, 从User对象的name="jack"上过滤, 并使用orm.contains_eager()来对Address.user属性使用"user"列
 from sqlalchemy.orm import contains_eager
+
 jacks_addresses = session.query(Address).\
-    join(Address.user).\
-        filter(User.name=="jack").\
-            options(contains_eager(Address.user)).all()
-print(jacks_addresses)
+                          join(Address.user).\
+                          filter(User.name=="jack").\
+                          options(contains_eager(Address.user)).all()
+print(jacks_addresses, "\n", jacks_addresses[0].user)
 
 
-
-### NOTE: Deleting ###
+### NOTE: Deleting ### 删除
+# 让我们试着删除jack来看看这是怎么运行的.
 # 在session中用deleted标记对象, 然后发出一个count查询直到看见没有结果存在
 session.delete(jack)
-session.query(User).filter_by(name="jack").count()
+session.query(User).filter_by(name="jack").count() # 0
 # 再来看看jack的Address对象们
-session.query(Address).filter(Address.email_address.in_(["jack@google.com", "j25@yahoo.com"])).count()
-# 从结果来看, 这些地址是依然存在的, 对应的user_id将会被设置为NULL. SQLAlchemy不会默认采取级联删除, 除非显示的告诉SQLAlchemy.
+session.query(Address).filter(Address.email_address.in_(["jack@google.com", "j25@yahoo.com"])).count() # 2
+# 从结果来看, 这些地址是依然存在的, 对应的user_id将会被设置为NULL. 
+# SQLAlchemy不会默认采取级联删除, 除非显式的告诉SQLAlchemy.
 
 # Configuring delete/delete-orphan Cascade # 
 # 配置删除/删除孤立级联
-# 配置cascade选项在User.addresses关联关系上.
-# SQLAlchemy允许动态的在映射关系上添加新的属性, 在这里需要现将存在的表间关系移除, 这样就可以完全的移除映射然后重启, 需要关闭Session
-session.close()
-Base = declarative_base()
-# 在定义User类, 向addresses关联关系加入包含cascade定义的属性.
+# 我们将会在User.addresses关系上配置cascade(级联)选项来改变默认的删除方案.
+# SQLAlchemy允许动态的在映射关系上添加新的属性, 在这里的例子中需要将存在的表间关系移除, 所以我们需要彻底的移除映射关系并重启. 我们要关闭Session.
+session.close()   # 关闭session
+Base = declarative_base()   # 使用一个新的Declarative base class
+
+# 在定义User类, 向addresses关联关系加入包含cascade配置的属性.
 class User(Base):
     __tablename__ = "users"
 
@@ -615,7 +625,7 @@ class User(Base):
     fullname = Column(String)
     nickname = Column(String)
 
-    addresses = relationship("Address", back_populates="user", cascade="all, delete, delete-orphan")
+    addresses = relationship("Address", back_populates="user", cascade="all, delete, delete-orphan")   # 配置级联, 删除孤立数据
 
     def __repr__(self):
         return "<User(name=%s, fullname=%s, nickname=%s)>" % (self.name, self.fullname, self.nickname)
@@ -627,30 +637,47 @@ class Address(Base):
 
     id = Column(Integer, primary_key=True)
     email_address = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("user.id"))   # 外键
+
     user = relationship("User", back_populates="addresses")
 
     def __repr__(self):
         return "<Address(email_address=%s)>" % self.email_address
 
 # 这样当删除User中的记录的时候, 对应的Address中的用户记录也会一同删除
+jack = session.query(User). get(5)   # 通过主键载入jack
+del jack.addresses[1]   # 移除一个Address(延迟负载触发)
+
+search_result = session.query(Address).filter(Address.email_address.in_(["jack@google.com", "j25@yahoo.com"])).count()
+print(search_result)   # 1, 将会只有一个存在
+
+# 删除jack将会同时删除Jack和存在关联的Address.
+session.delete(jack)
+search_result = session.query(User).filter_by(name=="jack").count()
+print(search_result)   # 0
+search_result = session.query(Address).filter(Address.email_address.in_(["jack@google.com", "j25@yahoo.com"])).count()
+print(search_result)   # 0
+
+# 更多关于级联 https://docs.sqlalchemy.org/en/rel_1_2/orm/cascades.html#unitofwork-cascades
+# 级联功能也能通过关系数据库的ON DELETE CASCADE功能顺利整合.
+
 # 使用all, delete-orphan, 不会删除对应的相关数据, 但是在查询中将会不可见.
 
 
-### NOTE: Bulding a Many To Many Relationship ###
-# 接下来将会来创建一个博客应用, users可以书写多个BlogPost(多对一), 并且这些BlogPost有多个Keyword项和他相连(多对多).
-# 对于一个简单的多对多关系, 需要创建一个非映射Table构成用以连接表.
+### NOTE: Bulding a Many To Many Relationship ### 建立一个多对多关系
+# 接下来我们将会来创建一个博客应用, 用户们可以书写多个BlogPost(博客文章, 多对一), 并且这些BlogPost有多个Keyword(标签)项和他相连(多对多).
+# 对于一个简单的多对多关系, 需要创建一个没有映射Table构造用以连接表.
 from sqlalchemy import Table, Text
-# 连接表
+# 博客标签对应表, 用以和博客文章相关联, 联合主键
 post_keywords = Table('post_keywords', Base.metadata,
     Column("post_id", ForeignKey("postd.id"), primary_key=True),
     Column("keyword_id", ForeignKey("keywords.id"), primary_key=True)
 )
 # 通过以上直接声明一个Table, 可以看出这和声明一个映射类有所不同. 
-# Table是一个构造函数, 所以每一个独立的列Column参数数都被逗号分割. 
-# Column对象也被显式的命名, 而不是用指定的属性的名称.
+# Table是一个构造函数, 所以每一个独立的Column参数数都被逗号分割. 
+# Column对象也被显式的命名, 而不是用指定的变量的名称.
 
-# 接下来使用relationship()构造组件定义BlogPost和Keyword, 每一个引用到post_keywords表中的都是一个关联表
+# 接下来使用另外的relationship()构造函数定义BlogPost和Keyword, 每一个引用到post_keywords表的, 都将作为一个连接表.
 class BlogPost(Base):
     __tablename__ = "posts"
 
@@ -687,11 +714,13 @@ class Keyword(Base):
 # 以上两个类的声明都显式的使用了__init__方法. 记住, 当使用Declarative的时候, 这是可选的.
 
 # 多对多关系是BlogPost.keywords. 一个多对多关系定义的特征是使用secondary关键字参数, 其可以应用一个代表连接表的Table对象.
-# 这个表只单单包含两边关系表的各引用列; 如果其有任何其他的列, 比如其自身的主键或者其他表的外键, SQLAlchemy需要一个不同的使用模式叫做"association object".
-# 同样需要BlogPOST类有一个author字段.
-# 将添加这个字段作为另一个双向连接关系, 这样一个用户就可以有多个博客帖.
+# 这个表只单单包含关系两边表各自引用到的列; 如果其有任何其他的列, 比如其自身的主键或者其他表的外键, SQLAlchemy需要一个不同的使用模式叫做"association object".
+# association Object https://docs.sqlalchemy.org/en/rel_1_2/orm/basic_relationships.html#association-pattern
+
+# 我们同样需要我们的BlogPost类有一个author字段.
+# 我们将添加这个字段作为另一个双向连接关系, 排除了这个问题, 我们的一个用户就可以有多个博客帖.
 # 当我们连接到User.posts时, 我们将会能够进一步的过滤结果, 这样就不用载入完整的实例.
-# 对于这个目的, 我们使用一个relationship()的设置叫做lazy="dynamic", 通过这个参数配置一个可选的载入策略
+# 对于这个目的, 我们使用一个relationship()的设置叫做lazy="dynamic", 通过这个参数配置一个可选的载入策略.
 BlogPost.author = relationship(User, back_populates="posts")
 User.posts = relationship(BlogPost, back_populates="author", lazy="dynamic")
 
@@ -713,9 +742,10 @@ print(search_result)
 
 # 查看wnedy的有firstpost标签博客
 search_result = session.query(BlogPost).\
-    filter(BlogPost.author==wendy).\
-    filter(BlogPost.keywords.any(Keyword="firstpost")).all()
+                        filter(BlogPost.author==wendy).\
+                        filter(BlogPost.keywords.any(Keyword="firstpost")).all()
 print(search_result)
 
 search_result = wendy.posts.filter(BlogPost.keywords.any(keyword="firstpost")).all()
+print(search_result)
 
