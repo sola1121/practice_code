@@ -1,0 +1,212 @@
+bootstrap.css中对于一些页面中都会预先设置一些渲染属性, 如font-size, line-height, margin-bottom等
+
+1. 排版
+    1) 标题
+        <h1></h1> ~ <h6></h6> 可对应 .h1 ~ h6
+
+    2) 小标题
+        <small></small> 可对应 .small
+    
+    3) 对内容得到更大更粗行更高的段落文本
+        b4-typography-lead   .lead
+    
+    4) mark, 突出显示高亮文本
+        <mark></mark>
+
+    5) del, s, 文字删除效果
+        <del></del>   <s></s>
+
+    6) ins, u, 下划线
+        <ins></ins>   <u></u>
+
+    7) strong, em, 强调文本
+        <strong></strong>   通过font-weight
+        <em></em>   通过斜体属性
+
+    8) b, i, 高亮显示
+        <b></b>   <i></i>
+
+    9) 文本对齐
+        .text-left     左对齐
+        .text-right    右对齐
+        .text-center   居中对齐
+        .text-justify  两端对齐
+        .text-nowrap   不进行换行
+
+    10) 字母大小写
+        .text-lowercase   全部转换小写
+        .text-uppercase   全部转换大写
+        .text-capitalize  首字母大写
+    
+    11) 缩略语
+        <addr title="缩略内容">页面显示</addr>
+    
+    12) 地址
+        <address></address>
+
+    13) 引用
+        <blockquote></blockquote>
+        可以和<footer></footer>和<cite></cite>等嵌套配合
+        例:
+            <blockquote>
+                引用内容
+                <footer>一些脚注<cite>对脚注的引用说明</cite></footer>
+            </blockquote>
+            
+            <blockquote class="blockquote text-right">
+                <p class="mb-0"></p>
+                <footer class="blockquote-footer"> <cite title="Source Title">Source Title</cite></footer>
+            </blockquote>
+
+2. 列表
+    1) 无序列表和有序列表
+        无序号列表<ul></ul>
+        有序号列表<ol></ol>
+        列标签<li>
+    
+    2) 无样式列表
+        b4-typography-list-unstyled
+        <ul></ul>或<ol></ol>应用.list-unstyled样式, 移除列表的默认list-style样式, 这是针对直接子元素的.
+
+    3) 内联列表
+        <ul></ul>或<ol></ol>应用.list-inline, 可以将列表的所有元素放置于同一行.
+        该效果是通过是指display: inline-block并添加少量的padding完成的.
+
+    4) 描述列表
+        描述列表<dl></dl>
+            描述标题<dt></dt>
+            详细描述<dd></dd>
+        
+    5) 水平描述列表
+        <dl></dl>应用.dl-horizontal样式, 可以让该元素内的短语及其描述排在同一行.
+        水平排列的描述列表将会阶段左侧太长的短语. 并且在较窄的窗口中, 列表将变为默认堆叠排列的布局方式.
+
+3. 代码
+    <code></code> 包裹内联样式的代码片段
+    <kbd></kbd> 标记用户通过键盘输入的内容
+    <pre></pre> 显示多行代码, 注意对将括号进行转义处理. 此外还可以使用.pre-scrollable演示, 其作用是设置maxheight为350px, 并在垂直方向显示滚动条.
+    <var></var> 标记变量
+    <samp></samp> 标记程序输出的内容
+
+4. 表格
+    1) 基本表格
+        b4-table-default
+        <table></table>应用.table样式可以赋予其基本的表格样式, 表现为少量的padding和水平方向的分割线.
+
+    2) 斑马线表格
+        b4-table-special
+        <table></table>在.table后应用.table-striped样式, 可以让<tbody>中的元素每一行增加斑马条纹样式.
+
+    3) 带边框的表格
+        <table></table>在.table后应用.table-bordered样式, 可以为表格和其中的每个单元个增加边框.
+
+    4) 鼠标悬停高亮
+        <table></table>在.table后应用.table-hover样式, 可以让表格中<tbody>元素内的每一行对鼠标悬停状态做出响应.
+
+    5) 紧凑型表格
+        <table></table>在.table后应用.table-condensed样式, 可以让表格更加紧凑, 单元格中的padding会减半.
+
+    6) 状态类
+        Bootstrap为表格提供了五种状态的样式表, 通过这些状态类可以为表格中的行或单元格设置不同的背景颜色.
+        .active   表示当前活动的信息, 应用鼠标悬停颜色
+        .success  表示一个成功或积极的动作, 应用绿色
+        .info     表示普通的中立行为, 应用蓝色
+        .waring   表示一个需要注意的警告, 应用黄色
+        .danger   表示一个危险的或潜在的负面动作, 应用红色
+
+    7) 响应式表格
+        <table></table>在应用.table-responsive样式, 可以创建响应式表格. 响应式表格会在屏幕上(小于768px)水平滚动, 大于768px时水平滚动条会消失.
+
+5. 按钮
+    1) 按钮标签
+        Bootstrap允许在<a></a>, <button></botton>, <input>元素上应用按钮样式, 推荐在<button><button>上
+
+    2) 预定义按钮
+        b4-button-
+        基本样式.btn, 所有按钮元素都使用它. 在其后可以向其上添加一些预定义的按钮样式
+        .btn-default   默认标准按钮
+        .btn-primary   提供额外视觉效果, 表示一组按钮中的原始动作
+        .btn-success   表示一个成功或积极的动作
+        .btn-info      警告消息的上下文按钮
+        .btn-waring    表示应谨慎采取动作
+        .btn-danger    表示一个危险的或潜在的负面动作
+        .btn-link      并不强调是一个按钮, 看起来更像一个链接, 同时保持按钮的行为
+
+    3) 按钮尺寸
+        <button></button>标签应用
+        .btn-xs   超小按钮
+        .btn-sm   小按钮
+        .btn-lg   大按钮
+
+    4) 块级按钮
+        <button></button>标签应用
+        .btn-block, 将按钮拉升至其父元素100%宽度, 同时该按钮变为块级元素.
+
+    5) 按钮激活状态
+        <button></button>标签应用
+        .active, 应用于按钮, 变现为按压下去的样式
+    
+    6) 按钮禁用状态
+        b4-button-disabled-a
+        <button></button>标签中添加disabled属性, disabled="disabled"
+        <a></a>标签应用.disabled样式
+
+6. 图像
+    1) 响应式图像
+        <img>标签应用.img-responsive样式, 可以让图片支持响应式布局. 为图片设置了max-width=100%, height:auto属性.
+    
+    2) 图像形状
+        .img-rounded   添加border-radius:6px; 获得图像圆角
+        .img-circle    添加border-redius:500px; 让整个图像变成圆形
+        .img-thumbnail 添加padding和一个灰色边框, 使图像呈现缩略图
+
+7. 辅助类
+    1) 情景文本颜色
+        可以应用在文本, 链接上
+        .text-muted   柔和文本, 浅灰色
+        .text-primary 主要文本, 蓝色
+        .text-success 成功文本, 绿色
+        .text-info    信息文本, 浅蓝色
+        .text-warning 警告文本, 黄色
+        .text-danger  危险文本, 褐色
+    
+    2) 情景文本背景色
+        可以应用在文本, 链接上
+        .bg-primary   主要背景, 蓝色
+        .bg-success   成功背景, 绿色
+        .bg-info      信息背景, 浅蓝色
+        .bg-warning   警告背景, 红色
+        .bg-danger    危险背景, 褐色
+
+    3) 关闭按钮
+        <button></button>标签应用.close样式, 可以得到关闭按钮符号的样式, 这种样式通常应用在模态框和警告框上.
+
+    4) 三角符号
+        空<span></span>标签引用.caret样式, 可以得到三角符号. 三角符号一般用来指示某个元素具有下拉菜单的功能.
+
+    5) 快速浮动
+        对任意块级标签使用.pull-left或.pull-right样式可以将标签快速向左或向右浮动. 就是对float属性的使用.
+
+    6) 块级居中显示
+        通过给短语元素应用.center-block样式可以让元素以块级的方式居中显示.
+        display: block; margin-left: auto; margin-right: auto;
+    
+    7) 清除浮动
+        .clearfix
+    
+    8) 显示或隐藏
+        对块级元素, 使用.show, .hidden, .invisible.
+        .hidden     隐藏, 不占用文档流的隐藏
+        .invisible  不可见, 占用文档流的隐藏
+    
+    9) 屏幕阅读器和键盘焦点
+        .sr-only, 可以使元素对除屏幕阅读器之外的所有设备隐藏
+        .sr-only-focusable, 可以使元素在获得键盘焦点时显示
+
+    10) 图像替换
+        .text-hidden可以将文本元素隐藏, 同时可以在样式中定义背景图像来替换文本.
+        .text-hidden{
+            background: url(...),
+            height: 100px;
+            ...
+        }

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>各种CSS布局-个人样式</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://unpkg.com/ionicons@4.5.5/dist/ionicons.js"></script>
+
+    <style>
+        .cvheader{
+            border-bottom: 1px solid #dfdfdf;
+            padding-top: 30px;
+            padding-bottom: 20px;
+        }
+        .cvheader h1{
+            margin: 0px;
+        }
+        #contact{
+            border-radius: 4px;
+        }
+        .cvbody{
+            padding-top: 50px;
+        }
+        .lbox{
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 30px;
+            color: #fff;
+            padding: 50px;
+        }
+        .rbox{
+            border: 1px solid #dfdfdf;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            padding: 50px;
+        }
+        footer{
+            font-size: 10px;
+        }
+
+        /* 通用配置 */
+        .setBg-orange{
+            background-color: rgba(228, 158, 29, 0.9)
+        }
+        .setBg-red{
+            background-color: rgba(204, 29, 29, 0.9)
+        }
+        .setBg-green{
+            background: rgba(80, 226, 44, 0.9)
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 页面头部 -->
+    <div class="container">
+        <!-- 主要信息行 -->
+        <div class="row cvheader">
+            <!-- 名字和意向 -->
+            <div class="col-lg-5 col-md-5 col-xs-12">
+                <h1 class="text-primary">Zoff</h1>
+                <p><ion-icon name="attach"></ion-icon></span>宇宙警备队队员</p>
+            </div>
+            <div class="col-lg-3 col-md-3 col-xs-12">
+                <!-- 联系方式和地址 -->
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-xs-4">
+                        <p id="contact" class="text-center bg-info">联系</p>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-xs-8">
+                        <p><ion-icon name="at"></ion-icon>zoff@universion.com</p>
+                        <p><ion-icon name="call"></ion-icon><img src="img/2_zoff_phone.png" class="img-responsive img-thumbnail" alt=""></p>
+                        <p><ion-icon name="pin"></ion-icon>银河任我飘, M78是我家</p>
+                    </div>
+                </div>
+            </div>
+            <!-- 个人照片 -->
+            <div class="col-lg-3 col-md-3 col-xs-12">
+                <p><img class="img-responsive img-rounded" src="img/2_zoff.jpeg" alt="zoff_picture"></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页面主体区域 -->
+    <div class="container">
+        <div class="row cvbody">
+            <!-- 主体区域左栏 -->
+            <div class="col-lg-6 col-md-6 col-xs-12">
+                <div class="row">
+                    <div class="lbox setBg-green">
+                        <h4>个人介绍</h4>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatibus exercitationem reprehenderit inventore expedita aliquid fugit ratione sed libero. Totam tenetur modi voluptatum expedita dolorem aspernatur commodi quia quam quibusdam fugiat.</p>
+                    </div>
+                    <div class="lbox setBg-red">
+                        <h4>个人技能</h4>
+                        <p>
+                            <ul class="list-unstyled">
+                                <li>M87光线</li>
+                                <li>Z光线</li>
+                                <li>Z光线2</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div class="lbox setBg-orange">
+                        <h4>语言水平</h4>
+                        <img src="img/2_pie.png" width="150" height="150" class="pull-left">
+                        <img src="img/2_pie.png" width="150" height="150" class="pull-right">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 左右两栏间的空白列 -->
+            <div class="col-lg-1 col-md-1 col-xs-12">
+
+            </div>
+            
+            <!-- 主体区域右栏 -->
+            <div class="col-lg-5 col-md-5 col-xs-12">
+                <div class="row">
+                    <div class="rbox">
+                        <h4>教育背景</h4>
+                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur voluptatibus, natus et praesentium a tenetur magni! Numquam consequuntur porro ipsam eum aut enim laudantium accusamus hic placeat. Tempore, adipisci aliquam!</p>
+                    </div>
+                    <div class="rbox">
+                        <h4>工作经验</h4>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores expedita repellat distinctio provident vel natus voluptas, aperiam perferendis sed delectus, ipsa architecto alias dolorem quos adipisci recusandae porro error quaerat.</p>
+                    </div>
+                    <div class="rbox">
+                        <h4>个人爱好</h4>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sit nostrum quasi culpa laudantium veniam numquam doloremque molestiae hic mollitia consectetur nemo aliquid veritatis inventore, incidunt cum maiores ipsam, fuga maxime?</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <blockquote class="blockquote text-left">
+                <p>来关注我</p>
+                <footer class="blockquote-footer">这里可以看更多 -> <cite title="点击详细">点击详细</cite></footer>
+            </blockquote>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>
