@@ -1,0 +1,115 @@
+常见的表单元素有: 文本输入框(text), 下拉选择框(select), 单选按钮框(radio), 复选框(checkbox), 文本域(textarea), 按钮(button)
+
+在Bootstrap的form中, 单独的表单空间会自动赋予全局样式, 但若使用.form-control, 可以对表单中的元素做特殊处理. 
+也就是说, 如果上述表单元素应用了.form-control, 将会事项一些设计上的定制效果.
+
+<form></form>标签需要role="form"(在V3中)来表明使用的是Bootstrap的表单. 使用.form-inline, .form-horizontal指定表单的表现.
+<div class="form-group"></div>中存放表单控件, 有点类似row, 确定在其中的表单控件属于一组.
+<div class="input-group"></div>中存放表单控件, 所有在其中的<input>将会归于其一类.
+表单控件使用.form-control, 用以指定控件属于表单, 将会应用表单的配置.
+<label class="control-label" for=""></label>, 将会将label也纳入表单配置, 主要用于水平表单.
+
+
+1. 基础表单
+    1) 基本表单
+        (1) 向父<form></form> 标签中添加role="form" 属性.
+        (2) 把标签和控件放在一个带有class="form-group"的<div></div>标签中, 这是获取最佳间距所必须的.
+        (3) 向所有的文本元素<input>, <textarea></textarea>或<select></select>添加class="form-control"
+    
+    2) 内联表单
+        <form class="form-inline" role="form></form>
+    
+    3) 水平表单
+        <form class="form-horizontal"></form>
+        记住要向<label></label>使用.control-label
+
+2. 下拉框 
+    b4-form-select
+    <select></select>, 属于表单控件, 应用.form-control
+    如果要实现多选, 可以添加属性 multiple="multiple" 在其中.
+
+3. 文本域
+    b4-form-textarea
+    <textarea></textarea>, 属于表单控件, 应用.form-control
+    若将文本域纳入了form样式中, 即使用了.form-control, 则无需使用cols属性, 必要时可以设置row以确保高度.
+
+4. 单选框和复选框
+    <input type="radio">
+    <input type="checkbox">
+    复选框 b4-form-checkbox
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="checkbox" class="form-check-input" checked>
+            Display value
+          </label>
+        </div>
+    复选框在一行 b4-form-checkbox-inline
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"> Display value
+            </label>
+        </div>
+    单选框 b4-form-radio
+        <div class="form-check">
+            <label class="form-check-label">
+            <input type="radio" class="form-check-input" checked>
+            Display value
+          </label>
+        </div>
+    单选框在一行 b4-form-radio-custom
+        <label class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description"></span>
+        </label>
+
+5. 控件大小
+    .col-form-label-sm
+    .col-form-label-lg
+    .form-control-sm
+    .form-control-lg
+    .col-auto
+
+6. 表单禁用
+    表单元素的禁用和普通的HTML元素禁用一样, 只需要添加disabled="disabled"属性.
+    禁用当然也适用于checkbox, radio, select, button
+
+7. filedset
+    <filedset></filedset>将把在其中被包裹的控件视为一类, 如果其被禁用, 那么在其中的控件也会被禁用.
+
+8. 表单验证
+    1) 自定义表单验证
+        对于自定义Bootstrap表单验证消息，您需要将 novalidate属性添加到您的<form>。
+        这将禁用浏览器默认的反馈工具提示，但仍提供对JavaScript中的表单验证API有效支持。
+        尝试提交以下表格; 我们的JavaScript将拦截提交按钮并向您传递反馈:
+        尝试提交时，您将看到:invalid和 :valid的样式应用于表单控件。
+
+    2) 使用浏览器默认表单验证
+
+    3) 使用服务器验证
+        我们建议使用客户端验证，但是如果您需要使用服务器端验证，则可以使用.is-invalid和.is-valid来表示无效和有效的表单字段。
+        注意，.invalid-feedback这些类也支持。
+
+9. 输入框组
+    通过向输入框添加前缀和后缀的内容, 可以为用户输入添加公共的元素.
+    向.form-control添加前缀或后缀元素.
+    (1) 将前缀或后缀元素放在一个带有.input-group的div中
+    (2) 在相同的div内, 在.input-group-addon的span内放置额外内容
+    (3) 把该span放置在input元素前面或后面
+
+    <div class="col-md-4 mb-3">
+        <label for="validationCustomUsername">Username</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroupPrepend">@</span>
+            </div>
+            <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
+            <div class="invalid-feedback">
+                Please choose a username.
+            </div>
+        </div>
+    </div>
+
+    
+
+
