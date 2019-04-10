@@ -1,0 +1,350 @@
+1. 字体图标
+    在Bootstrap中可以免费使用Glyphicons的图标, 其在bootstrap.css中的.glyphicon中配置了默认样式, 在@font-face中指定了字体的位置.
+    <span class="glyphicon glyphicon-名字"></span> 使用指定名字的图标.
+    aria-label 指定其含义, 如果被屏幕捕捉设备抓取的时候, 将会被转义为此
+    aria-hidden 是否有含义, 将会采取隐藏或展示其存在意义.
+    .sr-only, 让其在视觉上展现出隐藏的效果.
+
+
+2. 下拉菜单
+    1) 基本 b4-dropdown-default
+        (1) 所有下拉菜单内容必须放在一个容器div中, 并给他添加.dropdown. 若设置为.dropup, 则可以让菜单向上弹出.
+        (2) 在上面的div元素中嵌套一个button元素作为触发按钮, 给button元素应用.dropdown-toggle以及data-toggle="dropdown"属性.
+        (3) 在上面的button按钮元素下面添加ul列表创建下拉列表, 给ul元素应用.dropdown-menu. 同时可以给ul元素添加aria-labelledby的属性供屏幕识别设备使用.
+        (4) li元素使用.dropdown-item指明是下拉元素.
+        不一定必须是ul和li标签, 也可以是div标签和a标签等的组合
+        下拉菜单属于js插件, 所以需要引入相关的bootstrap的js文件
+
+    2) 左右对齐
+        默认, 下拉菜单自动沿着父元素的上檐和左侧被定位为100%宽度.
+        .dropdown-menu-right
+        .dropdown-menu-left
+
+    3) 标题和分割线
+        通过给下拉菜单列表选项li元素应用.dropdown-header, 可以在列表中添加标题来标明一列选项.
+        应用.dropdown-divider可以添加分割线将链接分组.
+
+    4) 菜单状态
+        在li元素中添加.disabeld可以禁用当前列
+
+
+3. 按钮组
+    按钮组是将多个按钮堆叠在同一行上. 如果要把多个按钮对齐, 这个组件就非常有用. 通过和按钮插件联合使用, 可以将按钮组设置为单选按钮或复选框的样式和行为.
+    1) 基本 b4-bgroup-default
+        通过使用一个<div></div>包裹多个.btn按钮, 这个div使用.btn-group, 就可以创建一个按钮组.
+        为了向使用屏幕辅助技术的用户正确的传达按钮分组的内容, 需要给按钮组添加一个合适的role属性.
+        对于按钮组合, role="group"; 对于工具栏, role="toolbar".
+        如果按钮组合只包含一个单一的控制元素在不需要添加.
+        更好的, 在添加了role后, 在使用aria-label属性指明这是啥, 也可以使用aria-labelledby属性.
+    
+    2) 工具栏按钮
+        把一组或多组<div class="btn-group"></div>包含进<div class="btn-toolbar"></div>
+
+    3) 尺寸
+        给对应的按钮组使用.btn-group-xs, .btn-group-sm, .btn-group-lg
+
+    4) 嵌套
+        一个按钮组可以嵌套另一个按钮组, 下拉框等.
+
+    5) 垂直的按钮组
+        将按钮组div元素的btn-group替换为.btn-group-vertical
+
+    6) 两端对齐的按钮组
+        包裹的div元素中添加.btn-group-justified, 并填满其父元素的宽度.
+        a标签按钮可以直接给按钮组添加.btn-group-justified
+        button标签每一个按钮都必须单独包含在一个.btn-group组中
+
+
+4. 按钮式弹出菜单
+    1) 单按钮下拉菜单 b4-bgroup-dropdown
+        把任意一个按钮发入应用了.btn-button的div元素中, 然后加入适当的菜单标签, 就可以让按钮作为菜单的触发器.
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">单按钮下拉菜单</button>
+            <ul class="dropdown-menu">
+                <li><a href="#">选项1</a></li>
+                <li><a href="#">选项2</a></li>
+                <li><a href="#">选型3</a></li>
+            </ul>
+        </div>
+    
+    2) 分裂式按钮下拉菜单
+    <div class="btn-group">
+        <button type="button" class="btn btn-danger">分裂式下拉菜单</button>
+        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+            <span class="sr-only>也是可以添加文字的</span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-item">选项1</a></li>
+            <li><a href="#" class="dropdown-item">选项2</a></li>
+        </ul>
+    </div>
+
+    3) 尺寸
+        通过给下拉菜单中的触发按钮button元素添加.btn-xs, .btn-sm, .btn-lg
+    
+    4) 向上弹出
+        通过给按钮下拉菜单的父div(一般是.btn-group在的那个div元素)添加.dropup
+    
+
+5. 输入框组
+    使用输入框组可以很容易的向基于文本的输入框<input>元素添加作为前缀或后缀的文本, 按钮等内容.
+    1) 基本 
+        (1) 输入框组的所有内容包裹在一个应用了.input-group的div容器中
+        (2) 在上面的div元素中添加输入框input元素
+        (3) 在输入框input元素前面, 后面或者前后同时添加.input-group-addon的span元素, 将前缀或后缀的内容放在对应的span元素中
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+        </div>
+        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+            <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+            </div>
+        </div>
+
+    2) 尺寸
+        向输入框组的div元素添加
+        .input-group-xs
+        .input-group-sm
+        .input-group-lg
+
+    3) 作为额外元素的复选框和单选框
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                <input type="checkbox" aria-label="Checkbox for following text input">
+                </div>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with checkbox">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                <input type="radio" aria-label="Radio button for following text input">
+                </div>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with radio button">
+        </div>
+
+    4) 更多
+        https://getbootstrap.com/docs/4.3/components/input-group/
+
+
+6. 导航
+    通过给无序列表ul添加一个.nav, 可以创建一个导航组件. li元素使用.nav-item应用导航栏样式.
+    可对导航中的具体元素添加.active或.disabled来显示启用样式或禁用样式.
+    1) 选项卡导航
+        .nav-tabs
+    
+    2) 胶囊式导航
+        .nav-pills
+
+    3) 居中样式
+        .justify-content-center
+
+    4) 右对齐样式
+        .justify-content-end
+
+    5) 垂直显示
+        .flex-column
+
+7. 导航栏
+    b4-navbar-default
+    导航栏在网站中是作为导航页头的响应式基础组件. 导航栏在移动设备视图中是可以这叠的, 随着可用视口的宽度增加, 导航栏也会变为水平展开模式.
+    1) 默认导航栏样式
+        (1) 所有导航栏内容被包裹在一个<nav></nav>中, 给nav应用.navbar, .navbar-default,即可生成一个默认样式的导航栏.
+            注意: 如果这里使用的不是nav而是div的话, 应该为导航栏设置role="navigation"属性, 这样能够让使用辅助设备的明白这是一个导航栏区域.
+        (2) 在上面的nav元素中添加一个带有.navbar-header的div元素作为导航栏的头部, 头部中也可以带有.navbar-brand的a元素作为导航栏的品牌标识.
+        
+    2) 品牌图标
+        将导航栏内放置品牌标识的地方替换为<img>即可.
+
+    3) 表单
+        在导航栏中可以添加表单, 这时候需要将form元素用.navbar-form, 以确保表单适当的垂直对齐, 并且在较窄的视口中可以折叠.
+    
+    4) 按钮
+        button元素章添加.navbar-btn
+
+    5) 文本
+        .navbar-text
+
+    6) 非导航链接
+        对a元素使用.navbar-link让链接有正确的默认颜色和反色设置.
+
+    7) 对齐
+        通过给导航栏上的元素应用.navbar-left, .navbar-right可以让导航链接, 表单, 按钮或文本向左或向右对齐. 注意, 在应用他们的同时都产生浮动样式.
+
+    8) 固定在顶部
+        nav元素添加.navbar-fixed-top, 可以让导航栏固定在页面顶部. 当页面向下滚动时导航栏会一直固定显示, 不改变位置.
+        这个nav元素还可以包含一个应用了.container或.container-fluid的div容器, 从而在body两侧添加内边距时档函栏的内容任会居中.
+    
+    9) 固定在底部
+        nav元素添加.navbar-fixed-bottom, 可以让导航栏固定在页面底部.
+
+    10) 静止在顶部
+        nav元素添加.navbar-static-top, 这样将会一直保持在页面顶部.
+        注意, 这个静止的导航栏不会覆盖页面的任何内容, 因此不需要向body元素添加内边距padding.
+
+    11) 主题样式
+        可使用bg-颜色主题 来指定nav的背景颜色, 使用.nvabar-light, .navbar-dark也是.
+
+    12) 响应式导航栏
+        响应式导航栏在大屏幕下正常显示, 在小屏幕中则把所有导航栏元素隐藏在一个折叠菜单中, 通过触发按钮来控制菜单项的显示与隐藏.
+        (1) 将导航栏中所有将要被折叠的内容由一个div元素包裹, 并且给这个div元素添加.collapse, .navbar-collapse, 然后给这个div添加一个class或ID名
+        (2) 在导航栏标题内添加一个button按钮元素, 用于触发菜单项的显示和隐藏. 给这个button应用data-target="..."的属性, 属性值对应着上面div元素的class或ID名
+
+
+8. 路径导航
+    路径导航又叫面包屑导航, 是一种基于网站层次信息的显示方式. 通过创建一个带有.breadcrumb的ol列表元素即可得到一个路径导航.
+
+
+9. 分页
+    1) 基本实例 b4-pagination-defualt
+        创建一个带有.pagination的ul列表元素, 将页码放在这个列表中, 然后使用nav元素包裹这个列表, 即可生成一个分页组件.
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    2) 禁用和激活状态
+        不能点击的连接使用.disabled
+        当前点击了的使用.active
+        建议将.active或.disabled状态的a标签改为span标签, 这样可以确保其怎么也不能单击
+
+    3) 尺寸
+        ul元素中添加.pagination-sm, .pagination-lg
+
+
+10. 翻页
+    实现上一页下一页的简单翻页
+    1) 基本
+        创建一个带有.pager的ul列表元素, 将翻页连接放在这个列表中, 然后使用nav元素包裹这个列表. 在默认的翻页组件中, 连接居中对齐显示.
+    
+    2) 对齐链接
+        上一页, 下一页链接分别应用.previous和.next, 可以让链接变成左右两边对齐.
+
+    
+11. 徽章
+    span使用.badge变为徽章样式, .badge-default, .badge-primary, .badge-secondary, .badge-success, .badge-light等等更改样式
+    使用.label就是标签样式了, 操作同理. 标签样式比徽章锐角多一些.
+
+
+12. 巨幕 b4-jumbotron-default
+    巨幕(超大屏幕)是一个轻量, 灵活的组件, 他能延伸至整个浏览器视口来展示网站上的关键内容. 
+    创建一个带有.jumbotron的div即可添加.
+    如果需要让巨幕组件的宽度与浏览器宽度一致并且没有圆角, 可以把他放在所有.container元素的外面, 并且在内部添加一个.container的div
+
+
+13. 页头
+    页头组件能够为网页标题四周添加适当的间距, 并且与页面的其他部分形成一定的分割.
+    将标题放在带有.page-header的div中即可创建页头.
+
+
+14. 缩略图
+    将图片img元素包裹在.thumbnail的链接a元素中即可创建一个缩略图.
+    缩略图会添加4个像素的内边距(padding)和一个灰色边框, 当鼠标悬停在图像上时会动态显示出图像的轮廓.
+
+
+15. 警告框
+    1) 基本
+        div元素使用.alert, 可以添加role="alert"告诉这是个警告框, 即可完成一个基本的灰色的告警框. 
+        使用.alert-success, .alert-info, .alert-warning, .alert-danger, .alert-light, .alert-dark等配置情景样式.
+    
+    2) 关闭告警框
+        .alert-dismissible, 添加button元素, 指定data-dismiss="alert"属性
+        需要bootstrap.js中控件的支持.
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Holy guacamole!</strong> 这里显示的是告警信息.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+    3) 告警中的链接
+        告警框中有a元素, 使用.alert-link可以设置为匹配当前告警框的样式.
+
+
+16. 进度条
+    1) 基本 b4-progress-default
+        (1) 添加一个带有.progress的div容器元素
+        (2) 在上面的div元素中添加一个带有.progress-bar的div
+        (3) 给.progress-bar添加一个以百分比表示宽度的style属性, 表示进度.
+    
+    2) 不同情景样式
+        对.progress-bar所在的元素添加背景样式即可, 如 .bg-info, .bg-success, .bg-danger等等
+
+    3) 带条纹的进度条
+        对.progress-bar所在的元素添加.progress-bar-striped
+
+    4) 条纹动画
+        .progress-bar .progerss-bar-striped .progress-bar-animated 条纹开启动画
+
+    5) 堆叠进度条
+        在一个进度条<div class="progress"></div>中包含多条进度条.progress-bar
+
+
+17. 媒体对象
+    在web页面经常看到这样的效果, 在左侧或右侧以图片, 视频等媒体对象展示, 另一侧则是描述该媒体的文本内容. 这种形式的内容在Bootstrap中称为媒体对象.
+    媒体对象是一个抽象的样式, 用于构建不同类型的组件.
+    1) 默认样式 b4-media-default
+        (1) 所有媒体对象的内容被一个带有.media的div容器包裹
+        (2) 媒体对象分为两部分, 一部分带有.media-right或.media-left的元素(这两个类可以让图片产生有浮动或左浮动), 另一部分是带有.media-body的元素.
+        (3) .media-right或.media-left是用来放置媒体元素, 他可以是<a></a>或<div></div>. 在这里可以嵌套媒体元素(图片<img>或其他), 并给媒体元素应用.media-object
+        (4) .media-body是用来放置媒体描述信息的容器div, 在这里可以添加文本等内容.
+        (5) .media-body中可以添加带有.media-heading的标题元素, 用于描述媒体对象的标题.
+        注意: .media-object应该在.media-body的后面.
+
+    2) 对齐
+        支持flexbox组件, 在.media-body中应即可.
+
+    3) 媒体对象列表
+        将多个.media的div元素包含在.list-unstyled的ul或ol元素中.
+
+
+18. 列表组
+    1) 基本 b4-list-default
+        对ul或ol元素应用.list-group形成列表组, 对其中的li元素应用.list-group-item应用相应列表组样式
+    
+    2) 激活显示效果, 禁止显示效果
+        在.list-group-item中添加.active使用激活效果, 添加.disabled使用禁止效果
+
+    3) 添加徽章
+        添加的徽章.badge会自动放在最右边
+
+    4) 使用按钮button元素代替li元素
+        列表组中的元素可以是<button>, 这时父元素是div而不是ul或ol
+
+    5) 列表组情景样式
+        .list-group-item-action      将会有点击效果
+        .list-group-item-secondary 
+        .list-group-item-success
+        .list-group-item-danger
+        .list-group-item-warning
+        .list-group-item-info
+        .list-group-item-light
+        .list-group-item-dark
+
+
+19. 面板 (不存在于第4版中)
+    面板组件用于把DOM组件插入到一个盒子中
+    1) 基本
+        通过向div容器中添加.panel和.panel-default 可以创建一个基本的面板. 基本面板中含一个带有.panel-body的div元素用来放置面板的主体内容.
+
+20. well (不存在于第4版中)
+    div元素添加.well
+    
