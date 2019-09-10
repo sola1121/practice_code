@@ -1,0 +1,382 @@
+Bootstrap除了提供丰富的web组件之外, 还提供了12个jQuery插件库, 代码压缩后都包含在bootstrap.js中.
+Bootstrap中的js插件都依赖于jQuery, 所以使用前必须引入jQuery.
+
+过渡效果(Transition), transition.js
+模态框(Modal),        modal.js
+下拉菜单(Dropdown),   dropdown.js
+滚动监听(Scrollspy),  scrollspy.js
+选项卡(Tab),          tab.js
+工具提示(Tooltip),    tooltip.js
+弹出框(Popover),      popover.js
+警告框(Alert),        alert.js
+按钮(Botton),         botton.js
+折叠(Collapse),       collapse.js
+轮播(Carousel),       carousel.js
+附加导航(Affix),       affix.js
+
+
+1. 模态框 b4-modal-default
+    模态框是覆盖在父窗体上的子窗体. 通常用来显示来自一个单独的源的内容, 可以在不离阿凯父窗体的情况下有一些互动, 由子窗体提供信息交互等.
+    可以通过下面两种方式切换模态框插件的隐藏内容.
+    1) 通过data属性, 在控制器元素(比如按钮或链接)上设置data-toggle="modal", 同时设置data-target="#modalId"或href="#modalId"(用于a标签)来指定要切换的特定模态框(带有id="modalId"的)
+    2) 通过JavaScript, 可以通过简单的一行js代码来调用带有id="modalId"的模态框
+        $(#modalId).modal(options)
+
+    1) 模态框的结构
+        (1) class="modal", 模态框最外层容器, 可以控制模态框的显示与隐藏, 想使用键盘ESC关闭添加tabindex="-1", 需要过度效果添加.fade, 定义尺寸使用.modal-sm, .modal-lg
+        (2) class="modal-dialog", 第二层容器, role="document"
+        (3) class="modal-content", 第三层容器, 控制模态框的边框, 边距, 背景, 阴影效果等, 其中还包含了
+                class="modal-header", 模态框头部, 包含标题, 关闭按钮等
+                class="modal-body", 模态框主体, 显示消息内容主体
+                class="madal-footer", 模态框脚注, 包含操作按钮等
+
+        补充, 使用data-dismiss="modal"的按钮可以关闭父modal
+
+    2) 触发参数 data-*
+        data-toggle, 参数为字符串, 用于控制模态框的显示, 这个属性是必须的, 而且只能为data-toggle="modal"
+        data-target, 参数为字符串, 用于指定弹出哪个模态框, 这个属性是必须的, 而且只能是class="modal"容器上独有样式类或ID
+        data-backdrop, 参数为bool, 用于指定是否包含一个背景div元素. 默认取值为true, 则单击背景模态框消失, 如果取值为static, 则单击背景不会关闭模态框
+        data-keyboard, 参数为bool, 用于指定是否可以使用Esc键来关闭模态框. 通常要与tabindex="-1"搭配使用.
+        data-foucs, 参数为bool, 是否在初始化时聚焦
+        data-show, 参数为bool, 用于指定窗体初始化时是否显示
+
+    3) 模态框的特点
+        modal固定附送在浏览器中; modal的宽度是自适应的, 而且水平居中; 当浏览器的宽度小于768px, modal宽度600px; 底部有一个灰色的蒙版效果, 可以禁止单击底层元素; modal显示过程中会有过度效果.
+        bootstrap中不支持同时打开多个模态框
+
+    4) 滚动内容
+        默认的话过多的内容将会以滚动整个页面的方式查看
+        若只想在模态框中滚动而不涉及到整个页面 在.modal-dailog中添加 .modal-dialog-scrollable 
+    
+    5) 页面垂直居中模态框
+        在.modal-dialog 添加 .modal-dialog-centered
+
+    6) 其他组件的组合使用
+        可以使用grid系统在.modal-content中
+        可以使用tootip
+        可以使用popover
+
+    7) 验证模态框中的内容
+        如果在模态框中使用form元素
+        $('#exampleModal').on('show.bs.modal', function (event) {   // show事件触发
+            var button = $(event.relatedTarget) // 触发modal的按钮
+            var recipient = button.data('whatever') // 从触发按钮的data-*属性中获取额外的信息
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+
+    8) Javascript触发 - 参数
+        $(document).ready(function(){
+            $(btnTrigerModal).click(function(){
+                $(modalId).modal()   // 在modal中可以传入以字典形式表示的触发参数, 如backdrop, keyboard, foucs, show.
+            })
+        })
+    
+    9) Javascript触发 - 方法
+        前面提到了modal()方法三种传递参数的方式, 第一种是不传递任何参数, 第二种是传递对象参数, 第三种是传递字符串参数.
+        切换模态框状态 例, $("#modalId").modal("toggle")
+        触发时打开模态框 例, $("#modalId").modal("show")
+        触发时隐藏模态框 例, $("#modalId").modal("hide")
+        在模态框打开时其高度改变了的时候, 可以手动的调整其位置 例, $("#modalId").modal('handleUpdate')
+        毁灭模态框元素 例, $("modalId").modal('dispose')
+
+    10) Javascript触发 - 事件
+        Bootstrap的模态框提供了一些事件用于监听并执行我们的代码. 这些事件可在函数中当钩子使用.
+        show.bs.modal, 在调用show方法后触发
+            $("modalId").on("show.bs.modal", function(evt){ // 在这里执行一些动作 })
+        shown.bs.modal, 当模态框对用户可见时触发(将等待CSS过渡效果完成)
+            $("modalId").on("shown.bs.modal", function(evt){ // 在这里执行一些动作 })
+        hide.bs.modal, 当调用hide]实例方法时触发
+            $("modalId").on("hide.bs.modal", function(evt){ // 在这里执行一些动作 })
+        hidden.bs.modal, 当模态框完全对用户隐藏时触发
+            $("modalId").on("hidden.bs.modal", function(evt){ // 在这里执行一些动作 })
+
+
+2. 下拉菜单 b4-dropdown-default
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            下拉菜单触发
+        </button>
+        <div class="dropdown-menu" aria-labelledby="triggerId">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item disabled" href="#">Disabled action</a>
+            <h6 class="dropdown-header">Section header</h6>
+            <a class="dropdown-item" href="#">Action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">After divider action</a>
+        </div>
+    </div>
+    和模态框一样, 下拉菜单也提供了两种方式来显示下拉菜单: 声明式触发和JavaScript触发.
+
+    1) 声明式触发
+        上面的例子就是一个很好的声明式触发
+        声明式触发需要用到data-*属性, 下拉菜单一般用在导航或者导航条上
+        data-toggle="dropdown"属性
+
+        offset  数字 | 字符串 | 方法    默认0	
+            下拉列表相对于其目标的偏移量.
+            当一个方法被给予用作offset参数, 其会和一个包含偏移量数据作为第一个参数的对象被调用. 这个方法必须返回一个具有相同结构的对象. 
+            触发的DOM元素将会作为第二个参数被传入.
+            更多信息查看popper.js的文档
+
+        flip   boolean	默认true	
+            允许在引用元素上的下拉菜单在重叠的情况下翻转. 更多信息产看popper.js filp文档
+
+        boundary   字符串 | 元素    默认'scrollParent'	
+            内容溢出下拉菜单边界. 可以接受 'viewport', 'window', 'scrollParent', 或者一个引用的页面元素(通过JavaScript). 
+            更多信息查看popper.js preventOverflow 文档
+
+        reference   字符串 | 元素    默认'toggle'	
+            引用下拉菜单中的元素. 可以接受 'toggle', 'parent', 或者一个引用的页面元素.
+            更多信息查看popper.js referenceObject 文档
+
+        display	  字符串   默认'dynamic'	
+            默认的, 我们使用popper.js作为动态定位. 使用静态的 参数 'static'.
+    
+    2) Javascript触发
+        原理和modal一样, 可以使用dropdown()方法来显示和隐藏下拉菜单
+            $("#dropdownId").dropdown()
+
+    3) 事件
+        show.bs.dropdown, 在下拉菜单之前触发
+            $("dropdownId").on("show.bs.dropdown", function(){ // 在这里执行一些动作 })
+        shown.bs.dropdown, 在下拉菜单显示完成之后
+            $("dropdownId").on("shown.bs.dropdown", function(){ // 在这里执行一些动作 })
+        hide.bs.dropdown, 在菜单隐藏之前触发
+            $("dropdownId").on("hide.bs.dropdown", function(){ // 在这里执行一些动作 })
+        hidden.bs.dropdown, 在下拉菜单隐藏之后触发
+            $("dropdownId").on("hidden.bs.dropdown", function(){ // 在这里执行一些动作 })
+
+        
+3. 滚动监听
+    scrollspy, 即自动更新导航插件, 会根据滚动条的位置自动更新对应的导航条菜单. 基本的实现是随着滚动条滚动, 基于滚动条的位置向导航栏添加.activeclass
+    滚动监听在页面内容, 板块较多的情况下特别有用, 可以快速定位到当前所处的页面位置
+    前提:
+        所使用的Bootstrap里面, 在编译时有包含util.js
+        必须被使用在navbar组件或list group上
+        Scrollspy需要position: relative; 在你正在监视的元素上, 通常是body元素.
+        监视不是body的元素时, 确定对该元素的height被设置和overflow-y: scroll;被应用
+        锚点(a元素)是必须的, 并且通过id指定一个元素
+    1) 实现滚动监听
+        (1) 制作一个导航条, 并且为导航条中的每一个菜单项都定义一个锚点链接
+        (2) 将监听对象放在一个div容器中(也就是具体内容). 这个容器中存放多个子内容, 每个子内容都需要定义一个标题, 标题ID和导航条中菜单项的锚点对应, 并且在这个容器div上定义data-target="#导航条ID"
+        (3) 设置监听对象的容器高度, 产生滚动条. 也可以直接监听body元素上的滚动条
+
+        body {
+            position: relative;
+        }
+
+        <body data-spy="scroll" data-target="#navbar-example">
+            ...
+            <div id="navbar-example">
+                <ul class="nav nav-tabs" role="tablist">
+                ...
+                </ul>
+            </div>
+            ...
+        </body>
+
+
+    
+    2) 声明式触发
+        在Bootstrap中, 声明式触发都是通过data-*属性来设置的. 这里要使用到的是data-target="#当行条ID", data-spy="scroll" 设置在关联内容元素中
+        如果监听容器div中的内容, 可以直接在body上进行滚动条监控, 此时要将滚动监控器移到body上, 而且导航nav一定要在body内部.
+        导航条必须设置为顶部固定样式(navbar-fixed-top), 否则在页面滚动的过程中导航条会和页面一起向上滚动而导致看不到导航条.
+
+        <nav id="navbar-example2" class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="#fat">@fat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#mdo">@mdo</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                        aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#one">one</a>
+                        <a class="dropdown-item" href="#two">two</a>
+                        <div role="separator" class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#three">three</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <!-- 需要设置height, overflow-y: scroll, position: relative才能事项在指定大小内滚动 -->
+        <div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
+            <h4 id="fat">@fat</h4>
+            <p>内容0</p>
+            <h4 id="mdo">@mdo</h4>
+            <p>内容1</p>
+            <h4 id="one">one</h4>
+            <p>内容2</p>
+            <h4 id="two">two</h4>
+            <p>内容3</p>
+            <h4 id="three">three</h4>
+            <p>内容4</p>
+        </div>
+
+    3) Javascript触发
+        不是用data-*指定, 使用JavaScript在页面载入时或其他时候指定
+        
+        直接在body上使用时, 需要设置body的position: relative;
+            $('body').scrollspy({ target: '#navbar-example' }
+
+        在其他元素中使用时, 当然, 内容区域需要设置height, overflow-y: scroll, position: relative
+            $("#scrollContent").scrollspy({ target; "#navbar-example" })
+
+        1) 方法
+            当从DOM中移除或添加和scrollspy监控相关的元素时, 使用refresh方法刷新滚动监听
+                $('[data-spy="scroll"]').each(function () {
+                    var $spy = $(this).scrollspy('refresh')
+                })
+            使用dispose方法销毁滚动监听
+                $("#scrollContent").scrollspy("dispose")
+
+        2) 选项
+            可以使用data- 选项名 在触发时指定选项值, 也可以使用js触发方式, 直接以字典的形式在触发时传入参数指定
+            offset   数字    默认10    距离上部偏移的像素
+            method   字符串  默认 "auto"   可以使用auto, position, offset
+            target   字符串      指定在那个元素上应用scrollspy的功能
+
+        3) 事件
+            activate.bs.scrollspy 当一个新的元素变为active的时候触发
+               $('[data-spy="scroll"]').on('activate.bs.scrollspy', function () {
+                    // do something...
+                })
+
+
+4. 选项卡
+    通常和nav导航搭配使用, 即tab模式的导航, 也叫为标签页.
+    选项卡和导航的区别是, 选项卡除了有导航菜单之外, 其底部还有可以切换内容的选项卡
+    1) 选项卡的组成
+        (1) 导航菜单, 也就是选项卡菜单, 可以使用前面的导航组件来实现.
+        (2) 内容面板, 使用class="tab-content"和class="tab-pane"样式类.
+
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Active</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+        </ul>
+
+    2) 声明式触发
+        声明式触发需要添加data-toggle="tab"(标签式导航)或data-toggle="pill"(胶囊式导航)到锚文本链接中. 
+
+        (1) 在选项卡菜单链接上添加data-toggle="tab"或data-toggle="pill"
+        (2) 在选项卡菜单链接上添加href="#内容面板ID", 如果不是<a></a>标签, 则可以使用data-target="#内容面板ID"
+        (3) 内容面板都放在class="tab-content"中, 每个内容面板都有一个唯一ID和上面的data-target或href对应, 需要过度效果可以添加.fade
+                
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">内容1</div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">内容2</div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">内容3</div>
+        </div>
+
+    (3) Javascript触发
+        为每一个在id为myTab的nav中的标签添加效果
+            $('#myTab a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+        也可以单独指定
+            $('#myTab a[href="#profile"]').tab('show') // Select tab by name
+            $('#myTab li:first-child a').tab('show') // Select first tab
+            $('#myTab li:last-child a').tab('show') // Select last tab
+            $('#myTab li:nth-child(3) a').tab('show') // Select third tab
+        
+        (1) 事件
+            hide.bs.tab (on the current active tab)
+            show.bs.tab (on the to-be-shown tab)
+            hidden.bs.tab (on the previous active tab, the same one as for the hide.bs.tab event)
+            shown.bs.tab (on the newly-active just-shown tab, the same one as for the show.bs.tab event)
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {   // 新的选项卡被显示的时候
+                e.target    // 新激活的选项卡
+                e.relatedTarget   // 前一个激活的选项卡
+            })
+
+
+5. 工具提示 b4-tooltip-default
+    当鼠标移到页面上的一段文字上的时候会显示详细信息或鼠标悬停时显示操作的功能名称等. 
+    这些功能一般是使用标签元素的title属性来实现的, 但Bootstrap提供了工具提示(tooltip)来更强的的支持.
+
+    1) 组成与使用
+        当提示工具中没有内容的时候不会显示
+        指定container: "body" 以避免在复杂组件中的渲染问题(比如在input group, button group)
+        想要在隐藏元素上触发提示是不可能的
+        提示工具对于.disabled或者被禁用的的元素必须被在包裹的元素上触发.
+        当在超链接上触发包含多列的提示的时候, 提示工具将会被居中. 使用 white-space: nowrap;在a元素上以避免这个的发生
+        提示工具必须在他相关联的元素从DOM中移除前先关闭.
+        提示工具可以在shadow DOM被触发
+
+        (1) 设置button或者a元素的属性data-toggle="tooltip", 这个属性是固定的.
+        (2) 通过设置data-original-title或者title的属性来定义提示信息
+        (3) 通过设置data-placement属性来设置提示显示的方向, 有 top, right, bottom, left
+
+        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="这里是提示">
+            Button name
+        </button>
+
+    2) 只能 Javascript触发
+        开启所有的触发    
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+        
+        (1) 选项
+            可用在触发对象的data-* 的定义选项, 或在tooltip()中通过字典自定该选项参数
+            animation
+            container
+            delay	
+            html
+            placement
+            selector
+            template	
+            title	
+            trigger
+            offset
+            fallbackPlacement
+            boundary
+            sanitize
+            whiteList
+            sanitizeFn
+
+            另外还有单独的配置, show, hide, toggle, dispose, enable, disable, toggleEnabled, update
+
+        (2) 事件
+            show.bs.tooltip
+            shown.bs.tooltip	
+            hide.bs.tooltip
+            hidden.bs.tooltip	
+            inserted.bs.tooltip	
+
+                $('#myTooltip').on('hidden.bs.tooltip', function () {
+                    // do something...
+                })
+            
+        

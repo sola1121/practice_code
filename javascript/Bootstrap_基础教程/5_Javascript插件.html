@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#modalId"
+            data-show="true">
+            弹出按钮
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalId" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">modal 标题</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Modal 消息主体
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                下拉菜单
+            </button>
+            <div class="dropdown-menu" aria-labelledby="triggerId">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item disabled" href="#">Disabled action</a>
+                <h6 class="dropdown-header">Section header</h6>
+                <a class="dropdown-item" href="#">Action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">After divider action</a>
+            </div>
+        </div>
+
+
+        <nav id="navbar-example2" class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="#fat">@fat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#mdo">@mdo</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#one">one</a>
+                        <a class="dropdown-item" href="#two">two</a>
+                        <div role="separator" class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#three">three</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
+            <h4 id="fat">@fat</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat quaerat illum dicta at voluptate, nemo
+                perspiciatis molestias modi suscipit iusto incidunt libero tenetur veniam quia quas. Unde quos
+                laudantium
+                laborum.</p>
+            <h4 id="mdo">@mdo</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis non rem quibusdam nam, ea totam
+                molestias delectus laborum alias ratione inventore, tenetur porro voluptatum eum atque voluptas ullam
+                assumenda cupiditate.</p>
+            <h4 id="one">one</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis non rem quibusdam nam, ea totam
+                molestias delectus laborum alias ratione inventore, tenetur porro voluptatum eum atque voluptas ullam
+                assumenda cupiditate.</p>
+            <h4 id="two">two</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis non rem quibusdam nam, ea totam
+                molestias delectus laborum alias ratione inventore, tenetur porro voluptatum eum atque voluptas ullam
+                assumenda cupiditate.</p>
+            <h4 id="three">three</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis non rem quibusdam nam, ea totam
+                molestias delectus laborum alias ratione inventore, tenetur porro voluptatum eum atque voluptas ullam
+                assumenda cupiditate.</p>
+        </div>
+
+        <nav id="navbar-example" class="navbar navbar-default">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navmenu"><span
+                        class="sr-only">切换导航</span></button>
+                <a href="#" class="navbar-brand"><img src="img/holder.png" alt="picture"
+                        style="height:50px; margin-top:-15px"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item active">产品简介</li>
+                    <li class="nav-item"><a href="#example">案例</a></li>
+                    <li class="nav-item"><a href="#aboutMe">关于我</a></li>
+                    <li class="nav-item"><a href="#technology">相关技术</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div data-spy="scroll" data-target="#navbar-example" data-offset="0"
+            style="height:250px; overflow:auto; position: relative;">
+            <h4 id="product">产品简介</h4>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor non iste doloribus dignissimos aperiam
+                assumenda praesentium facere, itaque officia quisquam vero maiores ipsa reiciendis obcaecati. Velit ab
+                voluptates animi sequi.</p>
+            <h4 id="example">案例</h4>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora delectus dicta consequatur a, beatae
+                voluptates, facilis tenetur itaque voluptas deleniti nisi eum reiciendis quos dolore veritatis minus
+                dignissimos, atque eligendi!</p>
+            <h4 id="aboutMe">关于我</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores nihil ipsum saepe quam incidunt!
+                Explicabo
+                eveniet sequi ratione fugiat numquam, sed id natus libero et aperiam nulla repellat, nisi perferendis?
+            </p>
+            <h4 id="technology">相关技术</h4>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe deleniti debitis magnam consectetur quae
+                doloribus aspernatur quia, expedita fuga ducimus consequuntur placeat, asperiores quasi omnis a nisi
+                impedit
+                quibusdam! Unde!</p>
+        </div>
+
+        <div id="list-example" class="list-group">
+            <a class="list-group-item list-group-item-action" href="#list-item-1">Item 1</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-2">Item 2</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-3">Item 3</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-4">Item 4</a>
+        </div>
+        <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy-example">
+            <h4 id="list-item-1">Item 1</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Inventore eos tempore unde atque asperiores
+                placeat, adipisci cupiditate nemo iusto eum eaque aliquid voluptatum vel vero repellendus est esse cum
+                a.
+            </p>
+            <h4 id="list-item-2">Item 2</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Inventore eos tempore unde atque asperiores
+                placeat, adipisci cupiditate nemo iusto eum eaque aliquid voluptatum vel vero repellendus est esse cum
+                a.
+            </p>
+            <h4 id="list-item-3">Item 3</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Inventore eos tempore unde atque asperiores
+                placeat, adipisci cupiditate nemo iusto eum eaque aliquid voluptatum vel vero repellendus est esse cum
+                a.
+            </p>
+            <h4 id="list-item-4">Item 4</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Inventore eos tempore unde atque asperiores
+                placeat, adipisci cupiditate nemo iusto eum eaque aliquid voluptatum vel vero repellendus est esse cum
+                a.
+            </p>
+        </div>
+
+        <!-- 使用选项卡的nav -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">Active</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                    aria-expanded="false">Dropdown</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Action</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Another link</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link disabled">Disabled</a>
+            </li>
+        </ul>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                    aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                    aria-controls="profile" aria-selected="false">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                    aria-controls="contact" aria-selected="false">Contact</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Lorem ipsum
+                dolor
+                sit amet consectetur adipisicing elit. Sapiente voluptas molestiae fugiat rem officiis labore,
+                consequuntur
+                illo dolorum minus blanditiis. Nisi vero laborum nesciunt aliquid dolore. Consequuntur, ex. Quam,
+                deserunt.
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Lorem ipsum dolor sit
+                amet
+                consectetur adipisicing elit. Sapiente voluptas molestiae fugiat rem officiis labore, consequuntur illo
+                dolorum minus blanditiis. Nisi vero laborum nesciunt aliquid dolore. Consequuntur, ex. Quam, deserunt.
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Lorem ipsum dolor sit
+                amet
+                consectetur adipisicing elit. Sapiente voluptas molestiae fugiat rem officiis labore, consequuntur illo
+                dolorum minus blanditiis. Nisi vero laborum nesciunt aliquid dolore. Consequuntur, ex. Quam, deserunt.
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
+                        aria-controls="v-pills-home" aria-selected="true">Home</a>
+                    <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+                        aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+                    <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
+                        aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+                    <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab"
+                        aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                        aria-labelledby="v-pills-home-tab">Lorem ipsum, dolor sit amet consectetur ad itate iusto
+                        consequatur alias numquam illum mollitia beatae eveniet dolor repudiandae accusantium est quis
+                        tempora voluptatibus molestiae impedit dolorem.</div>
+                    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                        aria-labelledby="v-pills-profile-tab">Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                        Dolores pariatur sapiente, cu illum mollitia beatae eveniet dolor repudiandae accusantium est
+                        quis tempora voluptatibus molestiae impedit dolorem.</div>
+                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
+                        aria-labelledby="v-pills-messages-tab">Lorem ipsum, dolor sit amet consectetur
+                        aria-labelledby="v-pills-settings-tab">Lorem ipsum, dolor sit amet consectetur ente, cupiditate
+                        iusto consequatur alias numquam illum mollitia beatae eveniet dolor repudiandae accusantium est
+                        quis tempora voluptatibus molestiae impedit dolorem.</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                    aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                    aria-controls="profile" aria-selected="false">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab"
+                    aria-controls="messages" aria-selected="false">Messages</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab"
+                    aria-controls="settings" aria-selected="false">Settings</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
+            <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+            <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
+            <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+        </div>
+
+
+
+        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="我是有提示的">
+            Button name
+        </button>
+
+
+
+
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+</body>
+
+<script>
+    $('#modalId').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // 触发modal的按钮
+        var recipient = button.data('whatever') // 从触发按钮的data-*属性中获取额外的信息
+        console.log("触发了Modal的show事件")
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    })
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
+
+</html>
