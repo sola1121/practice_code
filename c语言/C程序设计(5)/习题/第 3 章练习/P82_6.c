@@ -1,6 +1,6 @@
 #include "stdio.h"
 
-/* ÊäÈë China Êä³ö Glmre */
+/* è¾“å…¥ China è¾“å‡º Glmre */
 
 int main(){
     char c1, c2, c3, c4, c5;

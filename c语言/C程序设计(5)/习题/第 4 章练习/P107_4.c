@@ -2,12 +2,12 @@
 
 int main(){
     int a, b, c;
-    printf("ÊäÈëÈı¸öÊı: ");
+    printf("è¾“å…¥ä¸‰ä¸ªæ•°: ");
     scanf("%d%d%d", &a, &b, &c);
 
     a = b>a?b:a;
     a = c>a?c:a;
-    printf("Èı¸öÊıÖĞ½Ï´óµÄÊÇ: %d\n", a);
+    printf("ä¸‰ä¸ªæ•°ä¸­è¾ƒå¤§çš„æ˜¯: %d\n", a);
 
     return 0;
 }

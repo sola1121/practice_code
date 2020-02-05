@@ -4,9 +4,9 @@
 void main(){
     int num;
     do {
-        printf("ÊäÈëÒ»¸öÐ¡ÓÚ1000µÄÕýÊý: ");
+        printf("è¾“å…¥ä¸€ä¸ªå°äºŽ1000çš„æ­£æ•°: ");
         scanf("%d", &num);
     } while (fabs(num)>1000);
 
-    printf("ÆäÆ½·½¸ù½Ó½ü: %.0f\n", trunc(sqrt(num)));
+    printf("å…¶å¹³æ–¹æ ¹æŽ¥è¿‘: %.0f\n", trunc(sqrt(num)));
 }

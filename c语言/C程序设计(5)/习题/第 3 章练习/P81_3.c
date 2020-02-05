@@ -2,14 +2,14 @@
 #include "math.h"
 
 /*
-  ¹º·¿´ÓÒøĞĞ´ûÁËd, Ã¿ÔÂ»¹¿î¶îp, ÔÂÀûÂÊr, ÇómÔÂºó»¹Çå
-  m = (log(p) - log(p-d*r))/log(1+r) »òĞ´×÷ m = log(p/p-d*r)/log(1+r)
+  è´­æˆ¿ä»é“¶è¡Œè´·äº†d, æ¯æœˆè¿˜æ¬¾é¢p, æœˆåˆ©ç‡r, æ±‚mæœˆåè¿˜æ¸…
+  m = (log(p) - log(p-d*r))/log(1+r) æˆ–å†™ä½œ m = log(p/p-d*r)/log(1+r)
 */
 
 int main(){
     float d = 300000.0, p = 6000.0, r = 0.01, m;
     m = (log10(p) - log10(p-d*r))/log10(1+r);
-    printf("½«ĞèÒª %.1f ¸öÔÂ²ÅÄÜ»¹Çå.\n", round(m*10)/10);
+    printf("å°†éœ€è¦ %.1f ä¸ªæœˆæ‰èƒ½è¿˜æ¸….\n", round(m*10)/10);
     getchar();
     return 0;
 }

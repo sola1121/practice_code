@@ -3,9 +3,9 @@
 
 int main(){
     int num, x1, x2, x3, x4, x5, count=0;
-    char *format = "%d ¸ÃÊıÓĞ %d Î», µ¹×ÅÀ´ÊÇ %d \n";
+    char *format = "%d è¯¥æ•°æœ‰ %d ä½, å€’ç€æ¥æ˜¯ %d \n";
     do {
-        printf("ÇëÊäÈë5Î»ÒÔÄÚÕıÕûÊı: ");
+        printf("è¯·è¾“å…¥5ä½ä»¥å†…æ­£æ•´æ•°: ");
         scanf("%d", &num);
     } while (fabs(num)>99999);
 
@@ -14,8 +14,8 @@ int main(){
         x1 = num;
     } else if (num>=10 && num<100){
         count += 2;
-        x1 = num - trunc(num / 10) * 10;   // »ñµÃ¸öÎ»
-        x2 = (num - x1) / 10;   // »ñµÃÊ®Î»
+        x1 = num - trunc(num / 10) * 10;   // è·å¾—ä¸ªä½
+        x2 = (num - x1) / 10;   // è·å¾—åä½
     } else if (num>=100 && num<1000){
         count += 3;
         x1 = num % 10;

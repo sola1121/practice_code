@@ -2,7 +2,7 @@
 
 int main(){
     double result = 0, w;
-    printf("ÊäÈëÀûÈó: ");
+    printf("è¾“å…¥åˆ©æ¶¦: ");
     scanf("%lf", &w);
 
     // if
@@ -40,7 +40,7 @@ int main(){
         result += (w-1e6) * 0.01;
     }
 
-    printf("\nÓ¦¸Ã·¢½±½ğ: %.2lf \n", result);
+    printf("\nåº”è¯¥å‘å¥–é‡‘: %.2lf \n", result);
 
     // switch
     result = 0;
@@ -48,7 +48,7 @@ int main(){
     if (w>1e6)
         flag = 10;
     else
-        flag = (int)w / 1e5;   // Çó×î¸ßÎ», ¾ÍÊÇÍòÎ»
+        flag = (int)w / 1e5;   // æ±‚æœ€é«˜ä½, å°±æ˜¯ä¸‡ä½
 
     switch(flag){
     case 0:
@@ -88,7 +88,7 @@ int main(){
         break;
     }
 
-    printf("Ó¦¸Ã·¢½±½ğ: %.2lf \n", result);
+    printf("åº”è¯¥å‘å¥–é‡‘: %.2lf \n", result);
 
     return 0;
 }
