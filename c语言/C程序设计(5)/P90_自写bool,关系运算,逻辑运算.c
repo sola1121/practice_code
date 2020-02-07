@@ -13,14 +13,14 @@ int main(){
 
     printf("True: %d, False: %d \n", True, False);
 
-    if (True) printf("ÊÇµÄ,×Ô¶¨ÒåµÄTrue¿ÉÒÔÓÃ.\n");
-    if (!False) printf("ÊÇµÄ,×Ô¶¨ÒåµÄFalse¿ÉÒÔÓÃ.\n");
+    if (True) printf("æ˜¯çš„,è‡ªå®šä¹‰çš„Trueå¯ä»¥ç”¨.\n");
+    if (!False) printf("æ˜¯çš„,è‡ªå®šä¹‰çš„Falseå¯ä»¥ç”¨.\n");
 
-    if (t and t) printf("True and True ³É¹¦Ö´ĞĞ.\n");
-    if (t or f) printf("True or False ³É¹¦Ö´ĞĞ.\n");
-    if (not f) printf("not False ³É¹¦Ö´ĞĞ.\n");
+    if (t and t) printf("True and True æˆåŠŸæ‰§è¡Œ.\n");
+    if (t or f) printf("True or False æˆåŠŸæ‰§è¡Œ.\n");
+    if (not f) printf("not False æˆåŠŸæ‰§è¡Œ.\n");
 
-    //ÓÅÏÈ¼¶: Âß¼­·Ç(!) > ¹ØÏµÔËËã·û > ËãÊıÔËËã·û > Âß¼­Óë(&&) Âß¼­»ò(||) > ¸³ÖµÔËËã·û
+    //ä¼˜å…ˆçº§: é€»è¾‘é(!) > å…³ç³»è¿ç®—ç¬¦ > ç®—æ•°è¿ç®—ç¬¦ > é€»è¾‘ä¸(&&) é€»è¾‘æˆ–(||) > èµ‹å€¼è¿ç®—ç¬¦
     printf("%d\n", 4&&4-!4);
     return 0;
 }

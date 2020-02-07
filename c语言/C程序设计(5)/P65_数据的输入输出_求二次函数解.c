@@ -3,17 +3,17 @@
 /*
 y=ax^2 + bx +c
 
-x=(-b)ÍÁsqrt(b^2-4*a*c)
+x=(-b)åœŸsqrt(b^2-4*a*c)
 delta = b^2 - 4*a*c
 
 
-printf Óë scanf º¯ÊıÓÉstdio.h¿âÌá¹©, ²¢²»ÊÇCµÄ¹Ø¼ü×Ö
+printf ä¸ scanf å‡½æ•°ç”±stdio.håº“æä¾›, å¹¶ä¸æ˜¯Cçš„å…³é”®å­—
 
 */
 
 int main(){
     double a, b, c, disc, x1, x2, p, q;
-    scanf("%lf%lf%lf", &a, &b, &c);   // ÒªÇóÊäÈëË«¾«¶ÈĞÍ±äÁ¿
+    scanf("%lf%lf%lf", &a, &b, &c);   // è¦æ±‚è¾“å…¥åŒç²¾åº¦å‹å˜é‡
     disc = b*b - 4 * a *c;
     if (disc<0){
         printf("There is no answer.");

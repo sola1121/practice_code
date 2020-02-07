@@ -2,12 +2,12 @@
 
 
 void func1(int a, int b){
-    printf("功能1调用. a+b= %d\n", a+b);
+    printf("鍔熻兘1璋冪敤. a+b= %d\n", a+b);
 }
 
 
 void func2(int a, int b){
-    printf("功能2调用. a-b= %d \n", a-b);
+    printf("鍔熻兘2璋冪敤. a-b= %d \n", a-b);
 }
 
 
@@ -25,7 +25,7 @@ int main(){
         func2(x, y);
         break;
     default:
-        printf("只接受单个字符a,b.\a");
+        printf("鍙帴鍙楀崟涓瓧绗,b.\a");
     }
 
     putchar('\a');

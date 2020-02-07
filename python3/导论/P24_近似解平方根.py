@@ -25,7 +25,7 @@ else:
 print("穷举CPU用时:", time.clock()-start_time, "\n\n\n")
 
 # 二分法
-num_guesses2 = 0
+num_guesses2 = 0   # 用于记录计算了多少次
 low = 0.0
 high = max(1.0, x)
 ans = (low+high)/2

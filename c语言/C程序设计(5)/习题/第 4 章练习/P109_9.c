@@ -1,6 +1,14 @@
 #include "stdio.h"
 #include "math.h"
 
+/*
+  ten_thousand = num / 10000;
+  thousand = (int)(num - ten_thousand * 10000) / 1000
+  hundred = (int)(num - ten_thousand * 10000 - thousand * 1000) / 100
+  ten = (int)(num - ten_thousand * 10000 - thousand * 1000 - hundred * 100) / 10
+  indiv = (int)(num - ten_thousand * 10000 - thousand * 1000 - hundred * 100 - ten * 10)
+*/
+
 int main(){
     int num, x1, x2, x3, x4, x5, count=0;
     char *format = "%d 该数有 %d 位, 倒着来是 %d \n";
