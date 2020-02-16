@@ -134,3 +134,5 @@ dmypy.json
 
 # 机器学习快速入门, 临时数据文件排除
 python3/机器学习快速入门/tmp/*
+
+.vsoced/*

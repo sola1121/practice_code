@@ -2,7 +2,7 @@
 
 int is_prime(unsigned int num){
     int flag = 1;   // 默认为True, 是素数
-    for (int i=2; i<num/2+1; i++){   // 其实到sqrt(num)就可以了
+    for (int i=2; i<num/2+1; i += 2){   // 其实到sqrt(num)就可以了
         if (num % i == 0){
             flag = 0;
             break;
