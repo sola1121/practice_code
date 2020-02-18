@@ -5,7 +5,8 @@
   斐波那契数列 2/1 + 3/2 + 5/3 +...
 */
 
-unsigned long fab(int n){   // 输入项数, 返回对应的数列值
+unsigned long fab(int n){
+    // 输入项数, 返回对应的数列值 
     unsigned int a1 = 1, a2 = 1, a3 = 2;
     while (n>2){
         a2 = a3;

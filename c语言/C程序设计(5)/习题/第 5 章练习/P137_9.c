@@ -7,7 +7,7 @@
   1000 内完数, 1*2*3 == 6, 6 == 1 +2 +3
 */
 
-void set_factor_array_0(int *arr){
+void set_factor_array_0(int *arr){   // 数组本生就是引用传递
     for (int c=0; c<factor_length; c++)
         arr[c] = 0;
 }

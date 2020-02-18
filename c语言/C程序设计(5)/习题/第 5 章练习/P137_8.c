@@ -2,7 +2,7 @@
 #include "math.h"
 
 /*
-  三位数中的水仙花数 153 = 1**3 + 5**3 + 3**3
+  三位数中的水仙花数: 153 = 1**3 + 5**3 + 3**3
 */
 
 const unsigned int start_limit = 100;

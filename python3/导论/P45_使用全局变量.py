@@ -2,6 +2,7 @@
 
 num_fib_calls = int()
 
+
 def fib(n):
     """返回第n项的斐波那契数列值"""
     global num_fib_calls

@@ -1,7 +1,7 @@
 #include "stdio.h"
 #include "math.h"
 
-void main(){
+void main() {
     long double result = 0.0, temp;
 
     temp = 0.0;
