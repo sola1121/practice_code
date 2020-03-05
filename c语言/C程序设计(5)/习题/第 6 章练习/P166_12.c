@@ -10,32 +10,31 @@
     写出编码和解码方法
 */
 
-int judge(char ch){
-    if ('A'<=ch && 'Z'<=ch)
-        return 1;
-    else if ('a'<=ch && 'z'<=ch)
-        return 2;
-    else 
-        return 0;
-}
-
-
-char encode(char ch){
-    int sign = judge(ch); 
-    char result;
-    switch (sign){
-    case 1:
-        result = (ch - 'A') / 2; 
-        return result;
-    case 2:
-        result = (ch - 'a') / 2;
-        return result;
-    default:
-        return 0;
-    }
-}
-
 int main(){
+    int j, n;
+    char ch[80], tran[80];
+
+    printf("input cipher code: ");
+    fgets(ch, 80, stdin);
+    printf("\ncipher code: %s", ch);
+
+    // 进行编码
+    j = 0;
+    while (ch[j] != '\0'){
+        if ((ch[j]>='A') && ch[j]<='Z')
+            tran[j] = 155-ch[j];
+        else if ((ch[j]>='a') && ch[j]<='z')
+            tran[j] = 219-ch[j];
+        else
+            tran[j] = ch[j];
+        j++;
+    }
+
+    n = j;
+    printf("\noriginal text: ");
+    for (j=0; j<n; j++)
+        putchar(tran[j]);
+    printf("\n");
 
     return 0;
 }

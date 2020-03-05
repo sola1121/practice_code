@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>particles.js使用粒子效果</title>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .background {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            z-index: 0; /* 画布在的层级 -1 的话就会作为背景了*/
+        }
+    </style>
+
+</head>
+
+<body>
+    <div style="text-align: center; margin: auto;">背景粒子效果</div>
+    <canvas class="background"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js"></script>
+</body>
+
+<script>
+    window.onload = function () {
+        Particles.init({
+            selector: '.background',
+            connectParticles: true, // 连接线
+            minDistance: 90, // 最小连接距离
+            responsive: [{
+                breakpoint: 768,
+                options: {
+                    maxParticles: 200,
+                    color: '#48F2E3',
+                    connectParticles: false
+                }
+            }, {
+                breakpoint: 425,
+                options: {
+                    maxParticles: 100,
+                    connectParticles: true
+                }
+            }, {
+                breakpoint: 320,
+                options: {
+                    maxParticles: 0
+
+                    // disables particles.js
+                }
+            }]
+        });
+    };
+</script>
+
+</html>

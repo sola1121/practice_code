@@ -9,7 +9,7 @@
 int main(){
     int insert_point = 0;
     float nums[len] = {1.0, 2.3, 4.5, 5.1, 5.2, 6.3, 7.8, 9.9, 9.9, 10.0}, 
-          input_num = 0.0, temp = 0.0;
+          input_num = 0.0;
 
     printf("当前: ");
     for (int i=0; i<len; i++){
@@ -28,12 +28,12 @@ int main(){
     }
     printf("插入点下标: %d\n", insert_point);
 
-    // 进行插入
-    temp = nums[insert_point];
-    nums[insert_point] = input_num;
-    for (int i=insert_point+1; i<len; i++){   // FIXME: 没法连贯
-        nums[i] = temp;
-        temp = nums[i+1]; 
+    // 进行插入, 这里使用的是倒着插入
+    for (int i = len; i>=insert_point; i--){
+        if (i == insert_point)
+            nums[i] = input_num;
+        else
+            nums[i] = nums[i-1];
     }
 
     printf("\n插入后: ");

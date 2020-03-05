@@ -21,5 +21,19 @@ int main(){
     }
     printf("\n");
 
+    // 数组自身进行逆序
+    // 以中间元素为中心, 将其两侧对称元素互换.
+    for (int i=0; i<len/2; i++){
+        a1 = arr[i];   // a1作为临时变量使用
+        arr[i] = arr[len-i-1];
+        arr[len-i-1] = a1;
+    }
+
+    printf("排序后: ");
+    for (int i=i; i<len; i++){
+        printf("%d  ", arr[i]);
+    }
+    printf("\n");
+
     return 0;
 }
