@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "time.h"
 #include "stdlib.h"
+#include "math.h"
 
 #define len 15
 
@@ -35,12 +36,19 @@ int main(){
     printf("要查询的数: ");
     scanf("%d", &temp);
     if (temp>arr[len-1] || temp<arr[0]){
-        printf("所输入超出范围.");
+        printf("所输入超出范围.\n");
         return 0;
     }
 
     // 二分法找下标
-    while (low!=high){
+    int count = 0;
+    double max_search_time = log2((double)len);   // 二分法最大查找次数 log2(N)
+    while (low<=high){
+        if ((double) count > max_search_time){
+            sub = -1;
+            printf("元素中没有所要找的.\n");
+            break;
+        }
         if (arr[sub] < temp){
             low = sub;
         } else if (arr[sub] > temp){
@@ -49,6 +57,7 @@ int main(){
             break;
         }
         sub = (low+high)/2;
+        count ++;
     }
 
     printf("所要找的下标: %d\n", sub);

@@ -33,7 +33,7 @@ int main(){
     // 进行检查
     for (m=0; m<row; m++){
         max_row = matrix[m][0];   // 开始时假设matrix[m][0]最大
-        max_subscript = 0;
+        max_subscript = 0;   // 表示在第几列
         for (n=0; n<column; n++){     // 找出第m行中最大的数
             if (matrix[m][n] > max_row){
                 max_row = matrix[m][n];
