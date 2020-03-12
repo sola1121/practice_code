@@ -9,11 +9,9 @@
 void bubble_sort(int a[],int n)//n为数组a的元素个数
 {
     // 一定进行N-1轮比较
-    for(int i=0; i<n-1; i++)
-    {
+    for(int i=0; i<n-1; i++) {
         // 每一轮比较前n-1-i个, 即已排序好的最后i个不用比较
-        for(int j=0; j<n-1-i; j++)
-        {
+        for(int j=0; j<n-1-i; j++) {
             if(a[j] > a[j+1])
             {
                 int temp = a[j];
@@ -28,7 +26,7 @@ int main(){
     float lst[10] = {5.1, 3.2, 2.4, 1.1, 6.8, 3.3, 9.9, 7.5, 5.1, 4.3}, temp;
     int ck, po, length = sizeof(lst)/sizeof(lst[0]), count=0;
 
-    // 这个似乎是选择排序 (￣┰￣*)
+    // 选择排序 (￣┰￣*)
     for (ck=0; ck<length-1; ck++){
 
         for (po=ck; po<length-1; po++){
