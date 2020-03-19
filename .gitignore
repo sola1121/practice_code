@@ -136,3 +136,5 @@ dmypy.json
 python3/机器学习快速入门/tmp/*
 
 .vscode
+
+tempCodeRunnerFile.*
