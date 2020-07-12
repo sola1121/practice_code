@@ -7,7 +7,7 @@
 // 函数传参是值传递
 
 // 传入值
-float max_of_tow(float num1, float num2){
+float max_of_two(float num1, float num2){
     return num1>num2 ? num1 : num2;
 }
 
@@ -35,7 +35,7 @@ int main(){
     // 使用max函数求二者之间最大值
     float the_max = array[0];
     for (int i=1; i<len; i++){
-        the_max = max_of_tow(the_max, array[i]);   // 传入数组的元素值
+        the_max = max_of_two(the_max, array[i]);   // 传入数组的元素值
     }
     printf("最大的值是%.2f\n", the_max);
 
