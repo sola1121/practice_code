@@ -38,7 +38,7 @@ int main(){
     */
 
     int (*pt)[3], i, j;   // (*p)[3]可以容纳三个int元素的int指针
-    pt = arr;
+    pt = arr;   // pt指向二维数组的第0行
     printf("输入行和列: ");
     scanf("%d,%d", &i, &j);
     printf("a[%d][%d]=%d\n", i, j, *(*(pt+i)+j));   // pt+i 获得对应的行地址, *(pt+i)获得指向行的数组地址, *(pt+i)+j获得具体元素的位置地址, *(*(pt+i)+j)获得具体元素
