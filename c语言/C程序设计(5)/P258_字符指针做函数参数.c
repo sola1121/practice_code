@@ -104,5 +104,5 @@ void copy_string_2_4(char *source, char *destination){
 void copy_string_3_1(char source[], char destination[]){
     char *p1, *p2;
     p1 = source, p2 = destination;
-    while((*p2++ = *p2++) != '\0');
+    while((*p2++ = *p1++) != '\0');
 }
