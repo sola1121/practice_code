@@ -1,8 +1,12 @@
 # include "stdio.h"
 
+/*
+    类型名 * 函数名(参数列表)
+*/
 
-float * array_traversal(float(* pointer)[4], int i){
-    float * p;
+
+float * array_traversal(float(* pointer)[4], int i){   // 接收一个包含四个元素的float数组
+    float * p;   // 将返回的指针变量
     p = *(pointer+i);   // 形参pointer是指向包含四个float元素的一维数组的指针变量
     return p;   // p的值是&matrix[m][0]
 }
@@ -11,7 +15,7 @@ float * array_traversal(float(* pointer)[4], int i){
 float * search(float (*pointer)[4]){    // 形参pointer是指向具有四个float元素的以为数组的指针变量
     const float limit = 60.0;
     int i=0;
-    float * p;
+    float * p;   // 将返回的指针变量
     p = NULL;
     for (; i<4; i++)   // 遍历一维数组
         if (*(*pointer+i)<limit)   // 如果有小于限制值的, 使p指向metrix[i][0]

@@ -13,7 +13,7 @@ int sum(int a, int b){
     return a + b;
 }
 
-int func(int a, int b, int (*f)(int, int)){
+int func(int a, int b, int (*f)(int, int)){   // int (*f)(int, int) 用于接受函数地址
     return (*f)(a, b);
 }
 
