@@ -12,7 +12,7 @@ int main(){
     int *pt1, *pt2;
 
     // 下面两个是等价的. 一个是获得数组首元素的地址, 另一个是直接赋值为数组名.
-    pt1 = &array[0];
+    pt1 = &array[0];   // []运算符优先级高于*与&
     pt2 = array;
 
     printf("pt1: %p, pt2: %p, 两个都指向了array的第一个元素.\n", pt1, pt2);
