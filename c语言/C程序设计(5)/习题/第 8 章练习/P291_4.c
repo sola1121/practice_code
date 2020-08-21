@@ -18,16 +18,19 @@ int main(){
         printf("%d  ", *(array+i));
     printf("\n");
 
-    // TODO: 让数组后面的move个元素移动到数组开头
-    int temp1[move], temp2[len-move];
-    for (int m=len-move-1, n=0; n<move; m++ ,n++)
-        temp1[n] = array[m];
-    for (int m=0, n=0; n<move; m++, n++)
-        temp2[n] = array[m];
-    for (int i=0; i<len-move-1; i++)
-        array[i] = temp2[i];
-    for (int m=len-move-1, n=0; m<len; m++, n++)
-        array[m] = temp1[n];
+    // 让数组后面的move个元素移动到数组开头
+    char * temp1[len-move], * temp2[move];
+    // 复制原先开头部分
+    for (int m=0; m<len-move; m++)
+        * (temp1+m) = * (array+m);
+    // 复制原先后端部分
+    for (int m=0, n=len-move; m<move; m++, n++)
+        * (temp2+m) = * (array+n);
+    // 后端部分+开头部分
+    for (int i=0; i<move; i++)
+        *(array+i) = *(temp2+i);
+    for (int i=len-move, m=0; i<len; i++, m++)
+        *(array+i) = *(temp1+m);
 
     printf("处理后后数组: \n");
     for (int i=0; i<len; i++)
