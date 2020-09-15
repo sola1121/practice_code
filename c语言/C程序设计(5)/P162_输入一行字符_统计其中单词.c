@@ -8,7 +8,7 @@ void main(){
     int count = 1, judge = 0;
     char str[len] = {'0'}, temp;
     printf("输入内容: ");
-    fgets(str, len, stdin);
+    fgets(str, len, stdin);   // 使用scanf("%s", )的话, 如果字符串中有空格, 会被判断为输入结尾
 
     // strcmp是用来对比char*指针的 
     for (int i=0; i<strlen(str); i++){
