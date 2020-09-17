@@ -16,7 +16,7 @@ void sort_array(float *array, int length){
     float temp=0;
     for (int m=0; m<length; m++){
         for (int n=m+1; n<length; n++){
-            if (*(array+m)>*(array+n)){
+            if (*(array+m) > *(array+n)){
                 temp = *(array+n);
                 *(array+n) = *(array+m);
                 *(array+m) = temp;
@@ -38,23 +38,102 @@ void out_put(float (*matrix)[5], int rw, int col){
 
 
 void handle_matrix(float (*matrix)[5], int rw, int col){
-    // TODO:
-    float max = *(*(matrix+0)+0), 
+    float temp,
+          max = *(*(matrix+0)+0), 
           min_array[4] = {*(*(matrix+0)+0),*(*(matrix+0)+0),*(*(matrix+0)+0),*(*(matrix+0)+0)};
-    int count = 0;   // 用于记录最小数组中这是第几个最小的
+    // 取最大
     for (int m=0; m<rw; m++){
         for (int n=0; n<col; n++){
-            if (max<*(*(matrix+m)+n)) max = *(*(matrix+m)+n);
-            // TODO: 分别从最小到第四小开始找, 要注意排除已经找到的值
+            if (max < *(*(matrix+m)+n)) max = *(*(matrix+m)+n);
         }
     }
-    sort_array(min_array, 4);
+    // 取第一小
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (min_array[0] > *(*(matrix+m)+n))
+                min_array[0] = *(*(matrix+m)+n);
+        }
+    }
+    // 取第二小
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (min_array[1] > *(*(matrix+m)+n) && min_array[0] != *(*(matrix+m)+n))
+                min_array[1] = *(*(matrix+m)+n);
+        }
+    }
+    // 取第三小
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (min_array[2] > *(*(matrix+m)+n) && min_array[0] != *(*(matrix+m)+n) \
+                                                && min_array[1] != *(*(matrix+m)+n))
+                min_array[2] = *(*(matrix+m)+n);
+        }   
+    }
+    // 取第四小
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (min_array[3] > *(*(matrix+m)+n) && min_array[0] != *(*(matrix+m)+n) \
+                                                && min_array[1] != *(*(matrix+m)+n) \
+                                                && min_array[2] != *(*(matrix+m)+n))
+                min_array[3] = *(*(matrix+m)+n);
+        }
+    }
+
+    sort_array(min_array, 4);   // 已经依次取值了, 是从小到大排序, 在从小到大排序似乎不需要, 但依然写在这儿
     printf("最大值: %.2f\n", max);
     printf("最小值数组: ");
     for (int i=0; i<4; i++)
-        printf("%8.2f", *(min_array+i));
+        printf("%.2f   ", *(min_array+i));
+    printf("\n");
+
     // 将最大元素放在中间
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (*(*(matrix+m)+n) == max){
+                temp = *(*(matrix+2)+2);
+                *(*(matrix+2)+2) = *(*(matrix+m)+n);
+                *(*(matrix+m)+n) = temp;
+            }    
+        }
+    }
+
     // 将小元素排列到四个角
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (*(*(matrix+m)+n) == min_array[0]){
+                temp = *(*(matrix+0)+0);
+                *(*(matrix+0)+0) = *(*(matrix+m)+n);
+                *(*(matrix+m)+n) = temp;
+            }
+        }
+    }
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (*(*(matrix+m)+n) == min_array[1]){
+                temp = *(*(matrix+0)+4);
+                *(*(matrix+0)+4) = *(*(matrix+m)+n);
+                *(*(matrix+m)+n) = temp;
+            }
+        }
+    }
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (*(*(matrix+m)+n) == min_array[2]){
+                temp = *(*(matrix+4)+0);
+                *(*(matrix+4)+0) = *(*(matrix+m)+n);
+                *(*(matrix+m)+n) = temp;
+            }
+        }
+    }
+    for (int m=0; m<rw; m++){
+        for (int n=0; n<col; n++){
+            if (*(*(matrix+m)+n) == min_array[3]){
+                temp = *(*(matrix+4)+4);
+                *(*(matrix+4)+4) = *(*(matrix+m)+n);
+                *(*(matrix+m)+n) = temp;
+            }
+        }
+    }
 }
 
 
@@ -69,9 +148,13 @@ int main(){
         }
     }
 
+    printf("原始矩阵: \n");
     out_put(matrix, row, column);
 
     handle_matrix(matrix, row, column);
+
+    printf("处理后的矩阵: \n");
+    out_put(matrix, row, column);
 
     return 0;
 }
