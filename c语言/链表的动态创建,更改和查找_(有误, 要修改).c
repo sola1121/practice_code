@@ -94,7 +94,7 @@ struct SelfType * create_chains_end(){
     for (int i=0; i<10; i++){
         Sepe * current = (Sepe *) malloc(sizeof(Sepe));
 
-        // 向当前离岸边中添加数据
+        // 向当前链表中添加数据
         strcpy(current->str, generate_string());
         current->num = rand()%20;
 
@@ -105,7 +105,6 @@ struct SelfType * create_chains_end(){
     }
 
     return head;
-
 }
 
 
