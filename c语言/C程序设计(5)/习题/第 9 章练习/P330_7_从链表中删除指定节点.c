@@ -43,7 +43,7 @@ void output_chain(struct Student *pt){
 
 
 struct Student * delete_chain_item(struct Student *head, int num){
-    struct Student *privous, *current;
+    struct Student *previous, *current;
 
     if (head == NULL){
         printf("链表为空!\n");
@@ -53,14 +53,14 @@ struct Student * delete_chain_item(struct Student *head, int num){
     // 通过循环寻找满足删除条件的节点, 最后current指向需要删除的节点
     current = head;
     while (num != current->num && current->next != NULL){   // 当前指向的节点不为指定删除的并且不是最后一个节点
-        privous = current;
+        previous = current;
         current = current->next;
     }
 
     // 去除current指向的节点
     if (num == current->num){
         if (current == head) head = current->next;   // 当需要删除的节点是头节点
-        else privous->next = current->next;   // 上一个节点的next指向当前节点的next
+        else previous->next = current->next;   // 上一个节点的next指向当前节点的next
     } else {
         printf("删除条件 %d, 没有符合的节点.\n", num);
     }

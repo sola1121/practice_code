@@ -11,21 +11,21 @@ struct Student {
 
 
 struct Student * create_chain(){
-    struct Student *head, *privous, *current;
+    struct Student *head, *previous, *current;
 
-    head = privous = current = (struct Student *) malloc(sizeof(struct Student));
+    head = previous = current = (struct Student *) malloc(sizeof(struct Student));
 
     current->num = 1;
     current->score = rand()%100;
 
     for (int i=1; i<=20; i++){
-        privous = current;
+        previous = current;
 
         current = (struct Student *)malloc(sizeof(struct Student));
         current->num = i+1;
         current->score = rand()%100;
 
-        privous->next = current;
+        previous->next = current;
     }
     current->next = NULL;
 

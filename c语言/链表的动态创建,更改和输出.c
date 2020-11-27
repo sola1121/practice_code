@@ -108,9 +108,9 @@ struct SelfType * create_chains_end(){
 }
 
 
-// FIXME: 向链表中插入, 使用头插入的方式
+// 向链表中插入, 使用头插入的方式
 void insert_chains(struct SelfType *head, int value_i, char value_c[32]){
-    typedef struct SelfTyp Sepe;
+    typedef struct SelfType Sepe;
     Sepe * current = (Sepe *) malloc(sizeof(Sepe));
 
     strcpy(current->str, value_c);
@@ -122,6 +122,28 @@ void insert_chains(struct SelfType *head, int value_i, char value_c[32]){
      */
     current->next = head->next;
     head->next = current;
+}
+
+
+struct SelfType * delete_chain(struct SelfType * head, struct SelfType * item){
+    typedef struct SelfType Sepe;
+    Sepe *previous, *current;
+
+    current = head;
+    while (current->next != NULL){
+        if (current->num == item->num){
+            if (current == head) {
+                head = head->next;
+            } else {
+                previous->next = current->next;
+            }
+            break;
+        }
+        previous = current;
+        current = current->next;
+    }
+
+    return head;
 }
 
 
