@@ -91,7 +91,7 @@ struct Student * delete(struct Student * head, long num){
 
 // 向链表插入节点的函数
 struct Student * insert(struct Student * head, struct Student * stud){
-    struct Student *p0, *p1, *p2;
+    struct Student *p0, *p1, *p2;   // p0 指向插入的数据, p1 指向当前节点, p2 指向上一个节点
 
     p1 = head;
     p0 = stud;
