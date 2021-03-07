@@ -23,6 +23,7 @@ __pycache__/
 
 # C extensions
 *.so
+*.s
 
 # Distribution / packaging
 .Python
@@ -138,3 +139,5 @@ python3/机器学习快速入门/tmp/*
 .vscode
 
 tempCodeRunnerFile.*
+
+do_not_push*

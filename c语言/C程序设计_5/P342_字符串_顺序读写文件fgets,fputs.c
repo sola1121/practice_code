@@ -4,8 +4,10 @@
 #include "unistd.h"
 
 /*
-    char * fgets(char * str, int n, FILE * fp), 从fp指向的文件中读入n-1个字符, 赋予str, 补足'\0', 然后返回str数组首元素的地址. 无内容则返回NULL.
+    char * fgets(char * str, int n, FILE * fp), 从fp指向的文件中读入n-1个字符, 赋予str, 并补足'\0'
+                                                注意, 之后其还会返回str数组首元素的地址. 无内容则返回NULL.
     如果在读完n-1个字符之前遇到换行符'\n'或文件结束符EOF, 读入结束, 所遇到的换行符'\n'也作为一个字符读入.
+    也就是fgets每次只读取一行内容.
 
     int fputs(char * str, FILE * fp), 将str所指向的字符串输出到fp所指向的文件中. 输出是成功,返回0(在本人机器上是1),失败返回EOF.
     str可以是字符串常量, 字符数组名, 字符型指针. 字符串末尾的'\0'不输出.
@@ -26,9 +28,10 @@ int main(){
 
     printf("输入字符串:\n");
     for(int i=0; i<3; i++)
-        fgets(str_array[i], 16, stdin);   // 使用fgets从stdin向str_array数组传入字符串, 注意fgets会将\n也读入
-    
-    for(int m=0; m<3; m++){   // 选择法对字符串排序
+        fgets(str_array[i], 16, stdin);   // 使用fgets从stdin向str_array数组传入字符串, 注意fgets会将\n也读入, 也就是只能按行读
+
+    // 选择法对字符串排序
+    for(int m=0; m<3; m++){   
         for (int n=m+1; n<3; n++){
             if (strcmp(str_array[m], str_array[n])>0){
                 strcpy(temp, str_array[m]);
@@ -76,7 +79,7 @@ int main(){
             perror("进程创建错误.\n");
             break;
         default:   // 父进程执行部分
-            while(fgets(output_str, 16, fp) != NULL){
+            while(fgets(output_str, 16, fp) != NULL){   // 读取在fp指向文件缓冲区的内容
                 printf("%s", output_str);
             }    
     }

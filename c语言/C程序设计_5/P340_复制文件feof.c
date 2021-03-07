@@ -2,14 +2,14 @@
 # include "stdlib.h"
 
 /*
-    int feof(FILE *__stream) 判断当前文件是否遇到文件结束标志
+    int feof(FILE *stream) 判断当前文件是否遇到文件结束标志
     如果文件尾读出, 返回1(真); 如果没有读出, 返回0(假)
 */
 
 
 int main(){
 
-    char *srcFilename = "C_log.svg", *dstFilename =  "C_log(2).svg", ch;
+    char *srcFilename = "C_log.svg", *dstFilename =  "do_not_push_C_log(2).svg", ch;
     FILE *src, *dst;
 
     if((src = fopen(srcFilename, "rb")) == NULL){

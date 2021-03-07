@@ -17,6 +17,17 @@ char * generate_string(){
 }
 
 
+// TODO: 使用指针指向函数, 可以通过该指针调用不同的函数
+
+// TODO: 通过char*指针, 输出存储char*(即字符串)的数组
+
+
+// DEBUG 返回数组长度
+int array_length(void *array){
+    return sizeof(array)/sizeof(array[0]);
+}
+
+
 // 返回输入的字符, 使用 strcpy(目标, input_string());
 char * input_string(){
     static char result[512];

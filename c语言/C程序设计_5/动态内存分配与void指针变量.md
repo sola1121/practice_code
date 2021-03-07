@@ -50,6 +50,51 @@ void free(void *p);
 
     free(p);   // 释放指针变量p所指向的已分配的动态空间
 
+### sizeof() 运算符
+
+sizeof是C语言的一种单目操作符, 如C语言的其他操作符++、--等. 它并不是函数. sizeof操作符以字节形式给出了其操作数的存储大小. 操作数可以是一个表达式或括在括号内的类型名.操作数的存储大小由操作数的类型决定.
+
+    int a = 1;
+    sizeof(a);
+    sizeof a;
+    sizeof(int)
+
+注意: sizeof操作符不能用于函数类型, 不完全类型或位字段。不完全类型指具有未知存储大小的数据类型, 如未知存储大小的数组类型、未知内容的结构或联合类型、void类型等。
+
+sizeof操作符的结果类型是size_t，它在头文件\<stddef.h>中typedef为unsigned int类型。该类型保证能容纳实现所建立的最大对象的字节大小。
+
+sizeof的优先级为2级，比/、%等3级运算符优先级高。它可以与其他操作符一起组成表达式。如i*sizeof(int)；其中i为int类型变量。
+
+#### 运算表现
+
+当操作数具有数组类型时，其结果是数组的总字节数。但如果是作为void func(int *arr)函数中的数组, 这时这个数组其实是一个指针, 这个指针记录了该数组的地址, 如果使用sizeof, 则返回系统指针的大小, 4或者8
+
+联合类型操作数的sizeof是其最大字节成员的字节数。
+
+结构类型操作数的sizeof是这种类型对象的总字节数，包括任何垫补在内。
+
+让我们看如下结构：
+
+　　struct {char b; double x;} a;
+
+在某些机器上sizeof(a)=12，而一般sizeof(char)+ sizeof(double)=9。这是因为编译器在考虑对齐问题时，在结构中插入空位以控制各成员对象的地址对齐。如double类型的结构成员x要放在被4整除的地址。
+
+如果操作数是函数中的数组形参或函数类型的形参，sizeof给出其指针的大小
+
+#### 应用场景
+
+sizeof操作符的一个主要用途是与存储分配和I/O系统那样的例程进行通信
+
+　　void *malloc(size_t size)
+
+　　size_t fread(void * ptr,size_t size,size_t nmemb,FILE * stream)
+
+sizeof的另一个的主要用途是计算数组中元素的个数。
+
+    void * memset(void * s,int c,sizeof(s))
+
+由于操作数的字节数在实现时可能出现变化，建议在涉及到操作数字节大小时用ziseof来代替常量计算。
+
 ## void指针类型
 
 基类型为void的指针类型, 即void*型变量, 它不指向任何类型的数据. 在将它的值赋给另一个指针变量的时候, 由系统对它进行类型转换, 使之适合于被复制的变量类型.
@@ -87,3 +132,5 @@ void free(void *p);
     p_arr = (int *) malloc(5*sizeof(int));   // 也可 p_arr = mallocc(5*sizeof(int));
 
 程序中没有定义数组, 而是开辟一段动态自由分配区, 作为动态数组使用. 这样p_arr就指向了一个连续的地址头. 可以用p_arr+i来遍历这个地址段, 并可以向其中存取值.
+
+void array[] 作为函数参数是不行的
