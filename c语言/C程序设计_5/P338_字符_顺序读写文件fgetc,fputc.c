@@ -27,6 +27,11 @@
     如果当数据未充满缓冲区程序结束运行, 就有可能使缓冲区中的数据丢失. 使用fclose()的时候, 其先将缓冲区中的数据输出到磁盘, 然后才撤销文件信息区.
 
     如果在执行中查看输出的文件, 内容还没有被输入文件, 因为还在缓冲区.
+
+    int fgetc(FILE *stream)和int getc(FILE *stream)是一样的
+    int fputc(int c, FILE *stream)和int putc(int c, FILE * stream)是一样的
+
+    void exit(int status) 方法在<stdlib.h>中提供
 */
 
 int main(){
@@ -34,11 +39,11 @@ int main(){
     
     FILE * fp;
     if ((fp=fopen(filepath, "w")) == NULL){   // 打开写文件
-        printf("打开文件失败.\n");
+        puts("打开文件失败.\n");
         exit(0);
     }
 
-    printf("请输入一个准备存储到磁盘的字符串(以#结束): ");
+    puts("请输入一个准备存储到磁盘的字符串(以#结束): ");
     ch = getchar();
     while(ch != '#'){
         putchar(ch);   // 将输出的字符显示在屏幕上
@@ -49,10 +54,10 @@ int main(){
     fclose(fp);
     putchar(10);   // 向屏幕输出一个换行符
 
-    printf("\n查看文件中内容\n");
+    puts("\n查看文件中内容\n");
 
     if ((fp=fopen(filepath, "r")) == NULL){
-        printf("文件打开失败.\n");
+        puts("文件打开失败.\n");
         exit(0);
     }
 

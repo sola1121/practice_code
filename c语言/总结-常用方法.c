@@ -1,6 +1,7 @@
 # include "stdio.h"
 # include "string.h"
 # include "time.h"
+# include "unistd.h"
 
 
 // 用于生成随机字符串, 使用strcpy(目标, generate_string())
@@ -25,6 +26,19 @@ char * generate_string(){
 // DEBUG 返回数组长度
 int array_length(void *array){
     return sizeof(array)/sizeof(array[0]);
+}
+
+
+// MARK 还没测试过, 估计不行. 用来创建一个进程执行的
+void multi_process(int (*func)(int argc, char *argv[]), int argc, char *argv[]){
+    int pid=-1;
+    pid = fork();
+    if (pid == 0){
+        (*func)(argc, argv);
+    } else if (pid == -1){
+        puts("Error: 进程创建失败.\n");
+        exit(0);
+    }
 }
 
 

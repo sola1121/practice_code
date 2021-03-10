@@ -4,6 +4,8 @@
 /*
     int feof(FILE *stream) 判断当前文件是否遇到文件结束标志
     如果文件尾读出, 返回1(真); 如果没有读出, 返回0(假)
+
+    在<stdio.h>中#define EOF (-1), 可以直接使用 content == EOF 来判断是否读取完毕
 */
 
 
@@ -13,12 +15,12 @@ int main(){
     FILE *src, *dst;
 
     if((src = fopen(srcFilename, "rb")) == NULL){
-        printf("源文件读取失败.\n");
+        puts("源文件读取失败.\n");
         exit(0);
     }
 
     if((dst = fopen(dstFilename, "wb")) == NULL){
-        printf("目标文件打开失败.\n");
+        puts("目标文件打开失败.\n");
         exit(0);
     }
 
