@@ -4,17 +4,31 @@
 # include "unistd.h"
 
 
-// 用于生成随机字符串, 使用strcpy(目标, generate_string())
+// 用于生成随机长度字符串, 使用strcpy(目标, generate_string())
 char * generate_string(){
     int i = 0, length = 0;
-    length = rand()%31+1;
-    static char string[32];   // 字符串
+    length = rand()%31 + 1;   // 随机长度
+    static char result[32];   // 字符串
     while (i<length) {
-        string[i] = rand()%26+97;
+        result[i] = rand()%26 + 97;
         i++;
     }
-    string[length] = '\0';
-    return string;
+    result[length] = '\0';
+    return result;
+}
+
+
+// 用于生成指定长度的随机字符串, 使用strcpy(目标, generate_string(8))
+char * generate_string2(int len){
+    char * result = (char *) malloc(sizeof(char)*256);   // 字符串
+    char ch = '\0';
+    for (int i=0; i<len; i++){
+        ch = rand()%26 + 97;
+        sprintf(result, "%s%c", result, ch);   // strcat(result, &ch);
+    }
+    result[len] = '\0';
+
+    return result;
 }
 
 
