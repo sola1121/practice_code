@@ -65,3 +65,16 @@ char * input_string(){
 
     return result;
 }
+
+
+// 将int数值转换为二进制的表现形式输出
+void print_int2binary(int num){
+   int i;
+   for(i = sizeof(int)*8 - 1; i >= 0; i--){
+       if((1 << i) & num)
+           printf("%c", '1');
+       else
+           printf("%c", '0');
+   }
+   putchar('\n');
+}
