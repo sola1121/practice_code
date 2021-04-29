@@ -1,7 +1,9 @@
 # include "stdio.h"
+# include "stdlib.h"
 # include "string.h"
 # include "time.h"
 # include "unistd.h"
+# include "iso646.h"
 
 
 // 用于生成随机长度字符串, 使用strcpy(目标, generate_string())
@@ -77,4 +79,14 @@ void print_int2binary(int num){
            printf("%c", '0');
    }
    putchar('\n');
+}
+
+
+// 动态的创建二维数组, 以int 类型为例
+int ** create_matrix(int row, int column){
+    int* *matrix = (int**) malloc(sizeof(int*) * row);
+    for (int r=0; r<row; r++)
+        matrix[r] = (int*) malloc(sizeof(int) * column);
+
+    return matrix;
 }
