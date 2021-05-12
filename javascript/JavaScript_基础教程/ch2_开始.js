@@ -1,4 +1,4 @@
-## 常见的处理事件
+/* 常见的处理事件 */
     on
         -abort  // 用户终止了页面的加载
         -blur   // 用户离开了对象
@@ -13,9 +13,9 @@
         -submit   // 用户提交了表单
         -unload   // 用户离开了页面
 
----------------------------------------
+/*--------------------------------------- */
 
-## 启动时绑定方法
+/* 启动时绑定方法 */
 
 // 在启动时绑定
 window.onload = writeMessage
@@ -24,15 +24,15 @@ function writeMessage(){
     document.getElementById("helloMessage").innerHTML = "<h3>Hello, world.</h3>"
 }
 
----------------------------------------
+/* --------------------------------------- */
 
-警告框
+// 警告框
 window.alert
 
-确认框
+// 确认框
 window.confirm
-// 确认时返回true, 否认时返回false
 
+// 确认时返回true, 否认时返回false
 if (window.confirm("Are you sure?")){
     window.alert("yes")
 } else {
@@ -45,9 +45,9 @@ if (window.confirm("Are you sure?")){
 window.prompt
 var msg = window.prompt("Write some thing.")
 // 点击ok 返回内容, 若内容为空返回true, 点击cancel返回null
----------------------------------------
+/* --------------------------------------- */
 
-## 重定向
+/* 重定向 */
 
 <a href="source.html" id="redirect_link">点击</a>
 
@@ -65,7 +65,7 @@ function initRedirect() {
 
 // 如果是用户单击链接, 用户若没有启动js, 那么就会使用原始的链接.
 
----------------------------------------
+/* --------------------------------------- */
 
 switch/case
 
@@ -81,9 +81,9 @@ switch(判断值){
         ...
 }
 
----------------------------------------
+/* --------------------------------------- */
 
-## 处理错误
+/* 处理错误 */
 
 try/throw/catch
 

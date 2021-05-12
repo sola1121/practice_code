@@ -90,3 +90,22 @@ int ** create_matrix(int row, int column){
 
     return matrix;
 }
+
+
+// 输入字符串, 读取一行字符串, 并将多余的行处理
+char * gets_s(int n){
+    char *ret_value = (char *) malloc(sizeof(char)*n),
+         *find;
+
+    fgets(ret_value, n, stdin);
+    if (ret_value){
+        find = strchr(ret_value, '\n');
+        if (find)
+            *find = '\0';
+        else
+            while (getchar() != '\n')   // 处理剩余行
+                continue;
+    }
+
+    return ret_value;
+}
