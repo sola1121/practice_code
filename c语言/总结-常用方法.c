@@ -34,6 +34,20 @@ char * generate_string2(int len){
 }
 
 
+// 用于生成随机长度的字符串
+char * generate_string3(int len){
+    char * ret = (char *) malloc(len);
+    char ch = '\0', end = '\0';
+    for (int i=0; i<len; i++){
+        ch = rand()%26 + 97;
+        sprintf(ret, "%s%c", ret, ch);   // strcat(ret, &ch);
+    }
+    ret[len] = '\0';
+
+    return ret;
+}
+
+
 // TODO: 使用指针指向函数, 可以通过该指针调用不同的函数
 
 // TODO: 通过char*指针, 输出存储char*(即字符串)的数组
@@ -99,7 +113,7 @@ char * gets_s(int n){
 
     fgets(ret_value, n, stdin);
     if (ret_value){
-        find = strchr(ret_value, '\n');
+        find = strchr(ret_value, '\n');   // 找到第一个换行
         if (find)
             *find = '\0';
         else

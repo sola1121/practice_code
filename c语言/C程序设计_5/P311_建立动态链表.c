@@ -34,7 +34,7 @@ struct Student{
 
 int chain_len;   // 使用全局变量用来记录链表的长度
 
-struct Student * creat_stu(){
+struct Student * create_stu(){
     struct Student * head;   // 将返回的链头
     head = NULL;
 
@@ -78,7 +78,7 @@ int main(){
     srand((unsigned)time(NULL));
 
     struct Student *pt;
-    pt = creat_stu();
+    pt = create_stu();
     printf("链表长度: %d\n\n", chain_len);
     printf("%d , %s\n", pt->num, pt->name);
 
