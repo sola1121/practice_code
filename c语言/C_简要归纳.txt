@@ -3,7 +3,7 @@ C语言中的关键字
 void
 const , volatile
 signed , unsigned
-char , int , short , long , float , double , _bool , _Complex, _Imaginary
+char , int , short , long , float , double , _Bool , _Complex, _Imaginary
 struct , union , enum
 typedef
 sizeof
